@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="core-netty-4.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/logback-classic-1.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/logback-core-1.0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

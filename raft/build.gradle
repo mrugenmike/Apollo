@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.andrewkroh.gradle:gradle-protobuf-plugin:0.4.0'
+    }
+}
+
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'protobuf'
+
+protobuf {
+    // Explicitly setting protocol buffers version
+    // so that the build will fail if this specific
+    // version of the compiler is not present.
+    version = '2.6.0'
+    outputJava='../src/main/java'
+}
+
+jar {
+    baseName = 'apollo'
+    version =  '0.1.0'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+compile 'com.andrewkroh.gradle:gradle-protobuf-plugin:0.4.0'    
+testCompile('junit:junit:4.11')
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.11'
+}

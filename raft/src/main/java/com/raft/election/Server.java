@@ -17,6 +17,11 @@ public class Server {
     }
 
     public void run() {
+            // StartManagement Ports for
+        System.out.println("Starting management port");
+       // ManagementService service
+            // Start Data Ports
+        System.out.println("Starting Data Ports");
 
     }
 }

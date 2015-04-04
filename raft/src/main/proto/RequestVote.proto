@@ -1,0 +1,16 @@
+package messages;
+option java_package = "com.raft.message";
+option java_outer_classname = "RequestVoteProto";
+
+message VotingRequest{
+optional int32 termId =1;
+optional int32 candidateId =2 ;// candidate asking vote; store IP in this field
+optional int32 lastLogIndex=3 ; //see section 5.4 RAFT paper
+optional int32 lastLogTerm=4 ;//see section 5.4 RAFT paper
+}
+
+message VotingResponse{
+optional bool voteGranted=1 ;// true means vote granted
+optional int32 term=2; // term for which vote is granted
+optional int32 voterId=3; //store IP of the node which granted the vote.
+}

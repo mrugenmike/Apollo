@@ -1,0 +1,18 @@
+package messages;
+
+option java_package = "com.raft.message";
+option java_outer_classname = "AppendEntryProto";
+
+message AppendEntryRequest{
+optional int32 term=1;  //incremented by candidate before the stat of election; Reject RPC with lower term in candidate state.
+optional string leaderId=2; //required for client redirection to a leader store IP address in this field
+optional int32 previousLogIndex=3; //index of entry immediately preceding the new one
+optional int32 prevLogTerm=4; // term of previous log entry
+repeated   string entries=5; // log entries to store, should be empty for HeartBeats
+optional int32 leadersCommit=6; // leaders commit index
+}
+
+message AppendEntryResponse{
+optional int32 term=1; // for leader to update its term in case term>leadersTerm and become follower
+optional bool success=2;//true if follower contained entry matching prevLogIndex and prevLogTerm
+}

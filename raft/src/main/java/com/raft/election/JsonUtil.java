@@ -1,7 +1,7 @@
 package com.raft.election;
 
-import org.codehaus.jackson.map.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JsonUtil {
     public static <T> T decode(String data, Class<T> theClass) {

@@ -39,9 +39,13 @@ repositories {
 dependencies {
 compile 'com.andrewkroh.gradle:gradle-protobuf-plugin:0.4.0'    
 testCompile('junit:junit:4.11')
-compile 'io.netty:netty-all:4.1.0.Beta4'
-compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
 compile 'com.fasterxml.jackson.core:jackson-databind:2.5.1'
+compile 'com.fasterxml.jackson.core:jackson-core:2.5.1'
+compile 'com.fasterxml.jackson.core:jackson-annotations:2.5.1'
+compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
+compile 'io.netty:netty-all:4.1.0.Beta4'
+compile 'com.google.protobuf:protobuf-java:2.6.0'
+
 
 }
 

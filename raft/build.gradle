@@ -19,7 +19,6 @@ protobuf {
     // Explicitly setting protocol buffers version
     // so that the build will fail if this specific
     // version of the compiler is not present.
-    version = '2.6.0'
     outputJava='../src/main/java'
 }
 

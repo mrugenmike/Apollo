@@ -8,6 +8,703 @@ public final class RequestVoteProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public interface VotingEntryOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:messages.VotingEntry)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .messages.VotingRequest request = 1;</code>
+     */
+    boolean hasRequest();
+    /**
+     * <code>optional .messages.VotingRequest request = 1;</code>
+     */
+    com.raft.message.RequestVoteProto.VotingRequest getRequest();
+    /**
+     * <code>optional .messages.VotingRequest request = 1;</code>
+     */
+    com.raft.message.RequestVoteProto.VotingRequestOrBuilder getRequestOrBuilder();
+
+    /**
+     * <code>optional .messages.VotingResponse response = 2;</code>
+     */
+    boolean hasResponse();
+    /**
+     * <code>optional .messages.VotingResponse response = 2;</code>
+     */
+    com.raft.message.RequestVoteProto.VotingResponse getResponse();
+    /**
+     * <code>optional .messages.VotingResponse response = 2;</code>
+     */
+    com.raft.message.RequestVoteProto.VotingResponseOrBuilder getResponseOrBuilder();
+  }
+  /**
+   * Protobuf type {@code messages.VotingEntry}
+   */
+  public static final class VotingEntry extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:messages.VotingEntry)
+      VotingEntryOrBuilder {
+    // Use VotingEntry.newBuilder() to construct.
+    private VotingEntry(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private VotingEntry(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final VotingEntry defaultInstance;
+    public static VotingEntry getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public VotingEntry getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private VotingEntry(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.raft.message.RequestVoteProto.VotingRequest.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = request_.toBuilder();
+              }
+              request_ = input.readMessage(com.raft.message.RequestVoteProto.VotingRequest.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(request_);
+                request_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              com.raft.message.RequestVoteProto.VotingResponse.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = response_.toBuilder();
+              }
+              response_ = input.readMessage(com.raft.message.RequestVoteProto.VotingResponse.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(response_);
+                response_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.raft.message.RequestVoteProto.internal_static_messages_VotingEntry_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.raft.message.RequestVoteProto.internal_static_messages_VotingEntry_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.raft.message.RequestVoteProto.VotingEntry.class, com.raft.message.RequestVoteProto.VotingEntry.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<VotingEntry> PARSER =
+        new com.google.protobuf.AbstractParser<VotingEntry>() {
+      public VotingEntry parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new VotingEntry(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VotingEntry> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int REQUEST_FIELD_NUMBER = 1;
+    private com.raft.message.RequestVoteProto.VotingRequest request_;
+    /**
+     * <code>optional .messages.VotingRequest request = 1;</code>
+     */
+    public boolean hasRequest() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .messages.VotingRequest request = 1;</code>
+     */
+    public com.raft.message.RequestVoteProto.VotingRequest getRequest() {
+      return request_;
+    }
+    /**
+     * <code>optional .messages.VotingRequest request = 1;</code>
+     */
+    public com.raft.message.RequestVoteProto.VotingRequestOrBuilder getRequestOrBuilder() {
+      return request_;
+    }
+
+    public static final int RESPONSE_FIELD_NUMBER = 2;
+    private com.raft.message.RequestVoteProto.VotingResponse response_;
+    /**
+     * <code>optional .messages.VotingResponse response = 2;</code>
+     */
+    public boolean hasResponse() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .messages.VotingResponse response = 2;</code>
+     */
+    public com.raft.message.RequestVoteProto.VotingResponse getResponse() {
+      return response_;
+    }
+    /**
+     * <code>optional .messages.VotingResponse response = 2;</code>
+     */
+    public com.raft.message.RequestVoteProto.VotingResponseOrBuilder getResponseOrBuilder() {
+      return response_;
+    }
+
+    private void initFields() {
+      request_ = com.raft.message.RequestVoteProto.VotingRequest.getDefaultInstance();
+      response_ = com.raft.message.RequestVoteProto.VotingResponse.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, request_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, response_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, request_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, response_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.raft.message.RequestVoteProto.VotingEntry parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.raft.message.RequestVoteProto.VotingEntry prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code messages.VotingEntry}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:messages.VotingEntry)
+        com.raft.message.RequestVoteProto.VotingEntryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.raft.message.RequestVoteProto.internal_static_messages_VotingEntry_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.raft.message.RequestVoteProto.internal_static_messages_VotingEntry_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.raft.message.RequestVoteProto.VotingEntry.class, com.raft.message.RequestVoteProto.VotingEntry.Builder.class);
+      }
+
+      // Construct using com.raft.message.RequestVoteProto.VotingEntry.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getRequestFieldBuilder();
+          getResponseFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (requestBuilder_ == null) {
+          request_ = com.raft.message.RequestVoteProto.VotingRequest.getDefaultInstance();
+        } else {
+          requestBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (responseBuilder_ == null) {
+          response_ = com.raft.message.RequestVoteProto.VotingResponse.getDefaultInstance();
+        } else {
+          responseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.raft.message.RequestVoteProto.internal_static_messages_VotingEntry_descriptor;
+      }
+
+      public com.raft.message.RequestVoteProto.VotingEntry getDefaultInstanceForType() {
+        return com.raft.message.RequestVoteProto.VotingEntry.getDefaultInstance();
+      }
+
+      public com.raft.message.RequestVoteProto.VotingEntry build() {
+        com.raft.message.RequestVoteProto.VotingEntry result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.raft.message.RequestVoteProto.VotingEntry buildPartial() {
+        com.raft.message.RequestVoteProto.VotingEntry result = new com.raft.message.RequestVoteProto.VotingEntry(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (requestBuilder_ == null) {
+          result.request_ = request_;
+        } else {
+          result.request_ = requestBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (responseBuilder_ == null) {
+          result.response_ = response_;
+        } else {
+          result.response_ = responseBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.raft.message.RequestVoteProto.VotingEntry) {
+          return mergeFrom((com.raft.message.RequestVoteProto.VotingEntry)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.raft.message.RequestVoteProto.VotingEntry other) {
+        if (other == com.raft.message.RequestVoteProto.VotingEntry.getDefaultInstance()) return this;
+        if (other.hasRequest()) {
+          mergeRequest(other.getRequest());
+        }
+        if (other.hasResponse()) {
+          mergeResponse(other.getResponse());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.raft.message.RequestVoteProto.VotingEntry parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.raft.message.RequestVoteProto.VotingEntry) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.raft.message.RequestVoteProto.VotingRequest request_ = com.raft.message.RequestVoteProto.VotingRequest.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.RequestVoteProto.VotingRequest, com.raft.message.RequestVoteProto.VotingRequest.Builder, com.raft.message.RequestVoteProto.VotingRequestOrBuilder> requestBuilder_;
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public boolean hasRequest() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public com.raft.message.RequestVoteProto.VotingRequest getRequest() {
+        if (requestBuilder_ == null) {
+          return request_;
+        } else {
+          return requestBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public Builder setRequest(com.raft.message.RequestVoteProto.VotingRequest value) {
+        if (requestBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          request_ = value;
+          onChanged();
+        } else {
+          requestBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public Builder setRequest(
+          com.raft.message.RequestVoteProto.VotingRequest.Builder builderForValue) {
+        if (requestBuilder_ == null) {
+          request_ = builderForValue.build();
+          onChanged();
+        } else {
+          requestBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public Builder mergeRequest(com.raft.message.RequestVoteProto.VotingRequest value) {
+        if (requestBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              request_ != com.raft.message.RequestVoteProto.VotingRequest.getDefaultInstance()) {
+            request_ =
+              com.raft.message.RequestVoteProto.VotingRequest.newBuilder(request_).mergeFrom(value).buildPartial();
+          } else {
+            request_ = value;
+          }
+          onChanged();
+        } else {
+          requestBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public Builder clearRequest() {
+        if (requestBuilder_ == null) {
+          request_ = com.raft.message.RequestVoteProto.VotingRequest.getDefaultInstance();
+          onChanged();
+        } else {
+          requestBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public com.raft.message.RequestVoteProto.VotingRequest.Builder getRequestBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getRequestFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      public com.raft.message.RequestVoteProto.VotingRequestOrBuilder getRequestOrBuilder() {
+        if (requestBuilder_ != null) {
+          return requestBuilder_.getMessageOrBuilder();
+        } else {
+          return request_;
+        }
+      }
+      /**
+       * <code>optional .messages.VotingRequest request = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.RequestVoteProto.VotingRequest, com.raft.message.RequestVoteProto.VotingRequest.Builder, com.raft.message.RequestVoteProto.VotingRequestOrBuilder> 
+          getRequestFieldBuilder() {
+        if (requestBuilder_ == null) {
+          requestBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.raft.message.RequestVoteProto.VotingRequest, com.raft.message.RequestVoteProto.VotingRequest.Builder, com.raft.message.RequestVoteProto.VotingRequestOrBuilder>(
+                  getRequest(),
+                  getParentForChildren(),
+                  isClean());
+          request_ = null;
+        }
+        return requestBuilder_;
+      }
+
+      private com.raft.message.RequestVoteProto.VotingResponse response_ = com.raft.message.RequestVoteProto.VotingResponse.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.RequestVoteProto.VotingResponse, com.raft.message.RequestVoteProto.VotingResponse.Builder, com.raft.message.RequestVoteProto.VotingResponseOrBuilder> responseBuilder_;
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public boolean hasResponse() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public com.raft.message.RequestVoteProto.VotingResponse getResponse() {
+        if (responseBuilder_ == null) {
+          return response_;
+        } else {
+          return responseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public Builder setResponse(com.raft.message.RequestVoteProto.VotingResponse value) {
+        if (responseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          response_ = value;
+          onChanged();
+        } else {
+          responseBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public Builder setResponse(
+          com.raft.message.RequestVoteProto.VotingResponse.Builder builderForValue) {
+        if (responseBuilder_ == null) {
+          response_ = builderForValue.build();
+          onChanged();
+        } else {
+          responseBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public Builder mergeResponse(com.raft.message.RequestVoteProto.VotingResponse value) {
+        if (responseBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              response_ != com.raft.message.RequestVoteProto.VotingResponse.getDefaultInstance()) {
+            response_ =
+              com.raft.message.RequestVoteProto.VotingResponse.newBuilder(response_).mergeFrom(value).buildPartial();
+          } else {
+            response_ = value;
+          }
+          onChanged();
+        } else {
+          responseBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public Builder clearResponse() {
+        if (responseBuilder_ == null) {
+          response_ = com.raft.message.RequestVoteProto.VotingResponse.getDefaultInstance();
+          onChanged();
+        } else {
+          responseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public com.raft.message.RequestVoteProto.VotingResponse.Builder getResponseBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      public com.raft.message.RequestVoteProto.VotingResponseOrBuilder getResponseOrBuilder() {
+        if (responseBuilder_ != null) {
+          return responseBuilder_.getMessageOrBuilder();
+        } else {
+          return response_;
+        }
+      }
+      /**
+       * <code>optional .messages.VotingResponse response = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.RequestVoteProto.VotingResponse, com.raft.message.RequestVoteProto.VotingResponse.Builder, com.raft.message.RequestVoteProto.VotingResponseOrBuilder> 
+          getResponseFieldBuilder() {
+        if (responseBuilder_ == null) {
+          responseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.raft.message.RequestVoteProto.VotingResponse, com.raft.message.RequestVoteProto.VotingResponse.Builder, com.raft.message.RequestVoteProto.VotingResponseOrBuilder>(
+                  getResponse(),
+                  getParentForChildren(),
+                  isClean());
+          response_ = null;
+        }
+        return responseBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:messages.VotingEntry)
+    }
+
+    static {
+      defaultInstance = new VotingEntry(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:messages.VotingEntry)
+  }
+
   public interface VotingRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:messages.VotingRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -1385,6 +2082,11 @@ public final class RequestVoteProto {
   }
 
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_messages_VotingEntry_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_messages_VotingEntry_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_VotingRequest_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -1403,12 +2105,15 @@ public final class RequestVoteProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\021RequestVote.proto\022\010messages\"_\n\rVotingR" +
-      "equest\022\016\n\006termId\030\001 \001(\005\022\023\n\013candidateId\030\002 " +
-      "\001(\005\022\024\n\014lastLogIndex\030\003 \001(\005\022\023\n\013lastLogTerm" +
-      "\030\004 \001(\005\"D\n\016VotingResponse\022\023\n\013voteGranted\030" +
-      "\001 \001(\010\022\014\n\004term\030\002 \001(\005\022\017\n\007voterId\030\003 \001(\005B$\n\020" +
-      "com.raft.messageB\020RequestVoteProto"
+      "\n\021RequestVote.proto\022\010messages\"c\n\013VotingE" +
+      "ntry\022(\n\007request\030\001 \001(\0132\027.messages.VotingR" +
+      "equest\022*\n\010response\030\002 \001(\0132\030.messages.Voti" +
+      "ngResponse\"_\n\rVotingRequest\022\016\n\006termId\030\001 " +
+      "\001(\005\022\023\n\013candidateId\030\002 \001(\005\022\024\n\014lastLogIndex" +
+      "\030\003 \001(\005\022\023\n\013lastLogTerm\030\004 \001(\005\"D\n\016VotingRes" +
+      "ponse\022\023\n\013voteGranted\030\001 \001(\010\022\014\n\004term\030\002 \001(\005" +
+      "\022\017\n\007voterId\030\003 \001(\005B$\n\020com.raft.messageB\020R" +
+      "equestVoteProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1422,14 +2127,20 @@ public final class RequestVoteProto {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_messages_VotingRequest_descriptor =
+    internal_static_messages_VotingEntry_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_messages_VotingEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_VotingEntry_descriptor,
+        new java.lang.String[] { "Request", "Response", });
+    internal_static_messages_VotingRequest_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_messages_VotingRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_VotingRequest_descriptor,
         new java.lang.String[] { "TermId", "CandidateId", "LastLogIndex", "LastLogTerm", });
     internal_static_messages_VotingResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_messages_VotingResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_VotingResponse_descriptor,

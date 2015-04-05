@@ -2,6 +2,10 @@ package messages;
 option java_package = "com.raft.message";
 option java_outer_classname = "RequestVoteProto";
 
+message VotingEntry{
+optional VotingRequest request=1;
+optional VotingResponse response=2;
+}
 message VotingRequest{
 optional int32 termId =1;
 optional int32 candidateId =2 ;// candidate asking vote; store IP in this field

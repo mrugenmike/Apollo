@@ -8,6 +8,703 @@ public final class AppendEntryProto {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
   }
+  public interface AppendEntryOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:messages.AppendEntry)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional .messages.AppendEntryRequest request = 1;</code>
+     */
+    boolean hasRequest();
+    /**
+     * <code>optional .messages.AppendEntryRequest request = 1;</code>
+     */
+    com.raft.message.AppendEntryProto.AppendEntryRequest getRequest();
+    /**
+     * <code>optional .messages.AppendEntryRequest request = 1;</code>
+     */
+    com.raft.message.AppendEntryProto.AppendEntryRequestOrBuilder getRequestOrBuilder();
+
+    /**
+     * <code>optional .messages.AppendEntryResponse response = 2;</code>
+     */
+    boolean hasResponse();
+    /**
+     * <code>optional .messages.AppendEntryResponse response = 2;</code>
+     */
+    com.raft.message.AppendEntryProto.AppendEntryResponse getResponse();
+    /**
+     * <code>optional .messages.AppendEntryResponse response = 2;</code>
+     */
+    com.raft.message.AppendEntryProto.AppendEntryResponseOrBuilder getResponseOrBuilder();
+  }
+  /**
+   * Protobuf type {@code messages.AppendEntry}
+   */
+  public static final class AppendEntry extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:messages.AppendEntry)
+      AppendEntryOrBuilder {
+    // Use AppendEntry.newBuilder() to construct.
+    private AppendEntry(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private AppendEntry(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final AppendEntry defaultInstance;
+    public static AppendEntry getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public AppendEntry getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private AppendEntry(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.raft.message.AppendEntryProto.AppendEntryRequest.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = request_.toBuilder();
+              }
+              request_ = input.readMessage(com.raft.message.AppendEntryProto.AppendEntryRequest.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(request_);
+                request_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 18: {
+              com.raft.message.AppendEntryProto.AppendEntryResponse.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = response_.toBuilder();
+              }
+              response_ = input.readMessage(com.raft.message.AppendEntryProto.AppendEntryResponse.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(response_);
+                response_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return com.raft.message.AppendEntryProto.internal_static_messages_AppendEntry_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return com.raft.message.AppendEntryProto.internal_static_messages_AppendEntry_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              com.raft.message.AppendEntryProto.AppendEntry.class, com.raft.message.AppendEntryProto.AppendEntry.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<AppendEntry> PARSER =
+        new com.google.protobuf.AbstractParser<AppendEntry>() {
+      public AppendEntry parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new AppendEntry(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<AppendEntry> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int REQUEST_FIELD_NUMBER = 1;
+    private com.raft.message.AppendEntryProto.AppendEntryRequest request_;
+    /**
+     * <code>optional .messages.AppendEntryRequest request = 1;</code>
+     */
+    public boolean hasRequest() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional .messages.AppendEntryRequest request = 1;</code>
+     */
+    public com.raft.message.AppendEntryProto.AppendEntryRequest getRequest() {
+      return request_;
+    }
+    /**
+     * <code>optional .messages.AppendEntryRequest request = 1;</code>
+     */
+    public com.raft.message.AppendEntryProto.AppendEntryRequestOrBuilder getRequestOrBuilder() {
+      return request_;
+    }
+
+    public static final int RESPONSE_FIELD_NUMBER = 2;
+    private com.raft.message.AppendEntryProto.AppendEntryResponse response_;
+    /**
+     * <code>optional .messages.AppendEntryResponse response = 2;</code>
+     */
+    public boolean hasResponse() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional .messages.AppendEntryResponse response = 2;</code>
+     */
+    public com.raft.message.AppendEntryProto.AppendEntryResponse getResponse() {
+      return response_;
+    }
+    /**
+     * <code>optional .messages.AppendEntryResponse response = 2;</code>
+     */
+    public com.raft.message.AppendEntryProto.AppendEntryResponseOrBuilder getResponseOrBuilder() {
+      return response_;
+    }
+
+    private void initFields() {
+      request_ = com.raft.message.AppendEntryProto.AppendEntryRequest.getDefaultInstance();
+      response_ = com.raft.message.AppendEntryProto.AppendEntryResponse.getDefaultInstance();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeMessage(1, request_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, response_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, request_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, response_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static com.raft.message.AppendEntryProto.AppendEntry parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(com.raft.message.AppendEntryProto.AppendEntry prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code messages.AppendEntry}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:messages.AppendEntry)
+        com.raft.message.AppendEntryProto.AppendEntryOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return com.raft.message.AppendEntryProto.internal_static_messages_AppendEntry_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return com.raft.message.AppendEntryProto.internal_static_messages_AppendEntry_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                com.raft.message.AppendEntryProto.AppendEntry.class, com.raft.message.AppendEntryProto.AppendEntry.Builder.class);
+      }
+
+      // Construct using com.raft.message.AppendEntryProto.AppendEntry.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getRequestFieldBuilder();
+          getResponseFieldBuilder();
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        if (requestBuilder_ == null) {
+          request_ = com.raft.message.AppendEntryProto.AppendEntryRequest.getDefaultInstance();
+        } else {
+          requestBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (responseBuilder_ == null) {
+          response_ = com.raft.message.AppendEntryProto.AppendEntryResponse.getDefaultInstance();
+        } else {
+          responseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return com.raft.message.AppendEntryProto.internal_static_messages_AppendEntry_descriptor;
+      }
+
+      public com.raft.message.AppendEntryProto.AppendEntry getDefaultInstanceForType() {
+        return com.raft.message.AppendEntryProto.AppendEntry.getDefaultInstance();
+      }
+
+      public com.raft.message.AppendEntryProto.AppendEntry build() {
+        com.raft.message.AppendEntryProto.AppendEntry result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public com.raft.message.AppendEntryProto.AppendEntry buildPartial() {
+        com.raft.message.AppendEntryProto.AppendEntry result = new com.raft.message.AppendEntryProto.AppendEntry(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        if (requestBuilder_ == null) {
+          result.request_ = request_;
+        } else {
+          result.request_ = requestBuilder_.build();
+        }
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (responseBuilder_ == null) {
+          result.response_ = response_;
+        } else {
+          result.response_ = responseBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof com.raft.message.AppendEntryProto.AppendEntry) {
+          return mergeFrom((com.raft.message.AppendEntryProto.AppendEntry)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(com.raft.message.AppendEntryProto.AppendEntry other) {
+        if (other == com.raft.message.AppendEntryProto.AppendEntry.getDefaultInstance()) return this;
+        if (other.hasRequest()) {
+          mergeRequest(other.getRequest());
+        }
+        if (other.hasResponse()) {
+          mergeResponse(other.getResponse());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        com.raft.message.AppendEntryProto.AppendEntry parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (com.raft.message.AppendEntryProto.AppendEntry) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private com.raft.message.AppendEntryProto.AppendEntryRequest request_ = com.raft.message.AppendEntryProto.AppendEntryRequest.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.AppendEntryProto.AppendEntryRequest, com.raft.message.AppendEntryProto.AppendEntryRequest.Builder, com.raft.message.AppendEntryProto.AppendEntryRequestOrBuilder> requestBuilder_;
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public boolean hasRequest() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public com.raft.message.AppendEntryProto.AppendEntryRequest getRequest() {
+        if (requestBuilder_ == null) {
+          return request_;
+        } else {
+          return requestBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public Builder setRequest(com.raft.message.AppendEntryProto.AppendEntryRequest value) {
+        if (requestBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          request_ = value;
+          onChanged();
+        } else {
+          requestBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public Builder setRequest(
+          com.raft.message.AppendEntryProto.AppendEntryRequest.Builder builderForValue) {
+        if (requestBuilder_ == null) {
+          request_ = builderForValue.build();
+          onChanged();
+        } else {
+          requestBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public Builder mergeRequest(com.raft.message.AppendEntryProto.AppendEntryRequest value) {
+        if (requestBuilder_ == null) {
+          if (((bitField0_ & 0x00000001) == 0x00000001) &&
+              request_ != com.raft.message.AppendEntryProto.AppendEntryRequest.getDefaultInstance()) {
+            request_ =
+              com.raft.message.AppendEntryProto.AppendEntryRequest.newBuilder(request_).mergeFrom(value).buildPartial();
+          } else {
+            request_ = value;
+          }
+          onChanged();
+        } else {
+          requestBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000001;
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public Builder clearRequest() {
+        if (requestBuilder_ == null) {
+          request_ = com.raft.message.AppendEntryProto.AppendEntryRequest.getDefaultInstance();
+          onChanged();
+        } else {
+          requestBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public com.raft.message.AppendEntryProto.AppendEntryRequest.Builder getRequestBuilder() {
+        bitField0_ |= 0x00000001;
+        onChanged();
+        return getRequestFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      public com.raft.message.AppendEntryProto.AppendEntryRequestOrBuilder getRequestOrBuilder() {
+        if (requestBuilder_ != null) {
+          return requestBuilder_.getMessageOrBuilder();
+        } else {
+          return request_;
+        }
+      }
+      /**
+       * <code>optional .messages.AppendEntryRequest request = 1;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.AppendEntryProto.AppendEntryRequest, com.raft.message.AppendEntryProto.AppendEntryRequest.Builder, com.raft.message.AppendEntryProto.AppendEntryRequestOrBuilder> 
+          getRequestFieldBuilder() {
+        if (requestBuilder_ == null) {
+          requestBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.raft.message.AppendEntryProto.AppendEntryRequest, com.raft.message.AppendEntryProto.AppendEntryRequest.Builder, com.raft.message.AppendEntryProto.AppendEntryRequestOrBuilder>(
+                  getRequest(),
+                  getParentForChildren(),
+                  isClean());
+          request_ = null;
+        }
+        return requestBuilder_;
+      }
+
+      private com.raft.message.AppendEntryProto.AppendEntryResponse response_ = com.raft.message.AppendEntryProto.AppendEntryResponse.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.AppendEntryProto.AppendEntryResponse, com.raft.message.AppendEntryProto.AppendEntryResponse.Builder, com.raft.message.AppendEntryProto.AppendEntryResponseOrBuilder> responseBuilder_;
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public boolean hasResponse() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public com.raft.message.AppendEntryProto.AppendEntryResponse getResponse() {
+        if (responseBuilder_ == null) {
+          return response_;
+        } else {
+          return responseBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public Builder setResponse(com.raft.message.AppendEntryProto.AppendEntryResponse value) {
+        if (responseBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          response_ = value;
+          onChanged();
+        } else {
+          responseBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public Builder setResponse(
+          com.raft.message.AppendEntryProto.AppendEntryResponse.Builder builderForValue) {
+        if (responseBuilder_ == null) {
+          response_ = builderForValue.build();
+          onChanged();
+        } else {
+          responseBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public Builder mergeResponse(com.raft.message.AppendEntryProto.AppendEntryResponse value) {
+        if (responseBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              response_ != com.raft.message.AppendEntryProto.AppendEntryResponse.getDefaultInstance()) {
+            response_ =
+              com.raft.message.AppendEntryProto.AppendEntryResponse.newBuilder(response_).mergeFrom(value).buildPartial();
+          } else {
+            response_ = value;
+          }
+          onChanged();
+        } else {
+          responseBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public Builder clearResponse() {
+        if (responseBuilder_ == null) {
+          response_ = com.raft.message.AppendEntryProto.AppendEntryResponse.getDefaultInstance();
+          onChanged();
+        } else {
+          responseBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public com.raft.message.AppendEntryProto.AppendEntryResponse.Builder getResponseBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getResponseFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      public com.raft.message.AppendEntryProto.AppendEntryResponseOrBuilder getResponseOrBuilder() {
+        if (responseBuilder_ != null) {
+          return responseBuilder_.getMessageOrBuilder();
+        } else {
+          return response_;
+        }
+      }
+      /**
+       * <code>optional .messages.AppendEntryResponse response = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.raft.message.AppendEntryProto.AppendEntryResponse, com.raft.message.AppendEntryProto.AppendEntryResponse.Builder, com.raft.message.AppendEntryProto.AppendEntryResponseOrBuilder> 
+          getResponseFieldBuilder() {
+        if (responseBuilder_ == null) {
+          responseBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.raft.message.AppendEntryProto.AppendEntryResponse, com.raft.message.AppendEntryProto.AppendEntryResponse.Builder, com.raft.message.AppendEntryProto.AppendEntryResponseOrBuilder>(
+                  getResponse(),
+                  getParentForChildren(),
+                  isClean());
+          response_ = null;
+        }
+        return responseBuilder_;
+      }
+
+      // @@protoc_insertion_point(builder_scope:messages.AppendEntry)
+    }
+
+    static {
+      defaultInstance = new AppendEntry(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:messages.AppendEntry)
+  }
+
   public interface AppendEntryRequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:messages.AppendEntryRequest)
       com.google.protobuf.MessageOrBuilder {
@@ -1260,6 +1957,32 @@ public final class AppendEntryProto {
      * </pre>
      */
     boolean getSuccess();
+
+    /**
+     * <code>optional string senderId = 3;</code>
+     *
+     * <pre>
+     *sender IP address
+     * </pre>
+     */
+    boolean hasSenderId();
+    /**
+     * <code>optional string senderId = 3;</code>
+     *
+     * <pre>
+     *sender IP address
+     * </pre>
+     */
+    java.lang.String getSenderId();
+    /**
+     * <code>optional string senderId = 3;</code>
+     *
+     * <pre>
+     *sender IP address
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getSenderIdBytes();
   }
   /**
    * Protobuf type {@code messages.AppendEntryResponse}
@@ -1321,6 +2044,12 @@ public final class AppendEntryProto {
             case 16: {
               bitField0_ |= 0x00000002;
               success_ = input.readBool();
+              break;
+            }
+            case 26: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000004;
+              senderId_ = bs;
               break;
             }
           }
@@ -1409,9 +2138,64 @@ public final class AppendEntryProto {
       return success_;
     }
 
+    public static final int SENDERID_FIELD_NUMBER = 3;
+    private java.lang.Object senderId_;
+    /**
+     * <code>optional string senderId = 3;</code>
+     *
+     * <pre>
+     *sender IP address
+     * </pre>
+     */
+    public boolean hasSenderId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional string senderId = 3;</code>
+     *
+     * <pre>
+     *sender IP address
+     * </pre>
+     */
+    public java.lang.String getSenderId() {
+      java.lang.Object ref = senderId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          senderId_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string senderId = 3;</code>
+     *
+     * <pre>
+     *sender IP address
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getSenderIdBytes() {
+      java.lang.Object ref = senderId_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        senderId_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       term_ = 0;
       success_ = false;
+      senderId_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1432,6 +2216,9 @@ public final class AppendEntryProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(2, success_);
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getSenderIdBytes());
+      }
       getUnknownFields().writeTo(output);
     }
 
@@ -1448,6 +2235,10 @@ public final class AppendEntryProto {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, success_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getSenderIdBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -1570,6 +2361,8 @@ public final class AppendEntryProto {
         bitField0_ = (bitField0_ & ~0x00000001);
         success_ = false;
         bitField0_ = (bitField0_ & ~0x00000002);
+        senderId_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1606,6 +2399,10 @@ public final class AppendEntryProto {
           to_bitField0_ |= 0x00000002;
         }
         result.success_ = success_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.senderId_ = senderId_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -1627,6 +2424,11 @@ public final class AppendEntryProto {
         }
         if (other.hasSuccess()) {
           setSuccess(other.getSuccess());
+        }
+        if (other.hasSenderId()) {
+          bitField0_ |= 0x00000004;
+          senderId_ = other.senderId_;
+          onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
@@ -1751,6 +2553,106 @@ public final class AppendEntryProto {
         return this;
       }
 
+      private java.lang.Object senderId_ = "";
+      /**
+       * <code>optional string senderId = 3;</code>
+       *
+       * <pre>
+       *sender IP address
+       * </pre>
+       */
+      public boolean hasSenderId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional string senderId = 3;</code>
+       *
+       * <pre>
+       *sender IP address
+       * </pre>
+       */
+      public java.lang.String getSenderId() {
+        java.lang.Object ref = senderId_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            senderId_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string senderId = 3;</code>
+       *
+       * <pre>
+       *sender IP address
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getSenderIdBytes() {
+        java.lang.Object ref = senderId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          senderId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string senderId = 3;</code>
+       *
+       * <pre>
+       *sender IP address
+       * </pre>
+       */
+      public Builder setSenderId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        senderId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string senderId = 3;</code>
+       *
+       * <pre>
+       *sender IP address
+       * </pre>
+       */
+      public Builder clearSenderId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        senderId_ = getDefaultInstance().getSenderId();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string senderId = 3;</code>
+       *
+       * <pre>
+       *sender IP address
+       * </pre>
+       */
+      public Builder setSenderIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        senderId_ = value;
+        onChanged();
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:messages.AppendEntryResponse)
     }
 
@@ -1762,6 +2664,11 @@ public final class AppendEntryProto {
     // @@protoc_insertion_point(class_scope:messages.AppendEntryResponse)
   }
 
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_messages_AppendEntry_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_messages_AppendEntry_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_messages_AppendEntryRequest_descriptor;
   private static
@@ -1781,13 +2688,16 @@ public final class AppendEntryProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\021AppendEntry.proto\022\010messages\"\213\001\n\022Append" +
-      "EntryRequest\022\014\n\004term\030\001 \001(\005\022\020\n\010leaderId\030\002" +
-      " \001(\t\022\030\n\020previousLogIndex\030\003 \001(\005\022\023\n\013prevLo" +
-      "gTerm\030\004 \001(\005\022\017\n\007entries\030\005 \003(\t\022\025\n\rleadersC" +
-      "ommit\030\006 \001(\005\"4\n\023AppendEntryResponse\022\014\n\004te" +
-      "rm\030\001 \001(\005\022\017\n\007success\030\002 \001(\010B$\n\020com.raft.me" +
-      "ssageB\020AppendEntryProto"
+      "\n\021AppendEntry.proto\022\010messages\"m\n\013AppendE" +
+      "ntry\022-\n\007request\030\001 \001(\0132\034.messages.AppendE" +
+      "ntryRequest\022/\n\010response\030\002 \001(\0132\035.messages" +
+      ".AppendEntryResponse\"\213\001\n\022AppendEntryRequ" +
+      "est\022\014\n\004term\030\001 \001(\005\022\020\n\010leaderId\030\002 \001(\t\022\030\n\020p" +
+      "reviousLogIndex\030\003 \001(\005\022\023\n\013prevLogTerm\030\004 \001" +
+      "(\005\022\017\n\007entries\030\005 \003(\t\022\025\n\rleadersCommit\030\006 \001" +
+      "(\005\"F\n\023AppendEntryResponse\022\014\n\004term\030\001 \001(\005\022" +
+      "\017\n\007success\030\002 \001(\010\022\020\n\010senderId\030\003 \001(\tB$\n\020co" +
+      "m.raft.messageB\020AppendEntryProto"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1801,18 +2711,24 @@ public final class AppendEntryProto {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_messages_AppendEntryRequest_descriptor =
+    internal_static_messages_AppendEntry_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_messages_AppendEntry_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_messages_AppendEntry_descriptor,
+        new java.lang.String[] { "Request", "Response", });
+    internal_static_messages_AppendEntryRequest_descriptor =
+      getDescriptor().getMessageTypes().get(1);
     internal_static_messages_AppendEntryRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_AppendEntryRequest_descriptor,
         new java.lang.String[] { "Term", "LeaderId", "PreviousLogIndex", "PrevLogTerm", "Entries", "LeadersCommit", });
     internal_static_messages_AppendEntryResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(2);
     internal_static_messages_AppendEntryResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_messages_AppendEntryResponse_descriptor,
-        new java.lang.String[] { "Term", "Success", });
+        new java.lang.String[] { "Term", "Success", "SenderId", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

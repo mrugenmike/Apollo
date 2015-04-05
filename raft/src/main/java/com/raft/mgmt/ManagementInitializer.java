@@ -1,7 +1,49 @@
 package com.raft.mgmt;
 
-/**
- * Created by mrugen on 4/4/15.
- */
-public class ManagementInitializer {
+import com.raft.message.AppendEntryProto;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import io.netty.handler.codec.LengthFieldPrepender;
+import io.netty.handler.codec.compression.ZlibCodecFactory;
+import io.netty.handler.codec.compression.ZlibWrapper;
+import io.netty.handler.codec.protobuf.ProtobufDecoder;
+import io.netty.handler.codec.protobuf.ProtobufEncoder;
+
+public class ManagementInitializer extends ChannelInitializer<SocketChannel> {
+    private final boolean compress;
+
+    public ManagementInitializer(boolean compress) {
+        this.compress = compress;
+    }
+
+    @Override
+    protected void initChannel(SocketChannel ch) throws Exception {
+        ChannelPipeline pipeline = ch.pipeline();
+        // Enable stream compression (you can remove these two if unnecessary)
+        if (compress) {
+            pipeline.addLast("deflater", ZlibCodecFactory.newZlibEncoder(ZlibWrapper.GZIP));
+            pipeline.addLast("inflater", ZlibCodecFactory.newZlibDecoder(ZlibWrapper.GZIP));
+        }
+
+        /**
+         * length (4 bytes).
+         *
+         * Note: max message size is 64 Mb = 67108864 bytes this defines a
+         * framer with a max of 64 Mb message, 4 bytes are the length, and strip
+         * 4 bytes
+         */
+        pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(67108864, 0, 4, 0, 4));
+
+        // decoder must be first
+        pipeline.addLast("protobufDecoder", new ProtobufDecoder(AppendEntryProto.AppendEntry.getDefaultInstance()));
+        pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
+        pipeline.addLast("protobufEncoder", new ProtobufEncoder());
+
+        // our server processor (new instance for each connection)
+        pipeline.addLast("handler", new AppendEntryHandler());
+    }
 }

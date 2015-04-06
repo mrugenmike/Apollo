@@ -1,3 +1,4 @@
+/*
 package gash.consistenthash;
 
 import java.io.BufferedReader;
@@ -52,3 +53,4 @@ public class RingTest {
 		br.close();
 	}
 }
+*/

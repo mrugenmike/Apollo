@@ -20,6 +20,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -33,6 +34,11 @@ import com.google.protobuf.GeneratedMessage;
 public class CommHandler extends SimpleChannelInboundHandler<Request> {
 	protected static Logger logger = LoggerFactory.getLogger("connect");
 	protected ConcurrentMap<String, CommListener> listeners = new ConcurrentHashMap<String, CommListener>();
+
+	public void setChannel(Channel channel) {
+		this.channel = channel;
+	}
+
 	private volatile Channel channel;
 
 	public CommHandler() {
@@ -49,6 +55,7 @@ public class CommHandler extends SimpleChannelInboundHandler<Request> {
 	public boolean send(GeneratedMessage msg) {
 		// TODO a queue is needed to prevent overloading of the socket
 		// connection. For the demonstration, we don't need it
+		System.out.println("Sending out msg:"+msg);
 		ChannelFuture cf = channel.write(msg);
 		if (cf.isDone() && !cf.isSuccess()) {
 			logger.error("failed to poke!");

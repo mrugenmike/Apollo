@@ -55,7 +55,7 @@ public class CommConnection {
 	private CommHandler handler;
 
 	// our surge protection using a in-memory cache for messages
-	private LinkedBlockingDeque<com.google.protobuf.GeneratedMessage> outbound;
+	private LinkedBlockingDeque<GeneratedMessage> outbound;
 
 	// message processing is delegated to a threading model
 	private OutboundWorker worker;
@@ -111,19 +111,20 @@ public class CommConnection {
 
 	private void init() {
 		// the queue to support client-side surging
-		outbound = new LinkedBlockingDeque<com.google.protobuf.GeneratedMessage>();
+		outbound = new LinkedBlockingDeque<GeneratedMessage>();
 
 		group = new NioEventLoopGroup();
 		try {
 			handler = new CommHandler();
+			ClientInitializer initializer = new ClientInitializer(handler,false);
 			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class).handler(handler);
+			b.group(group).channel(NioSocketChannel.class).handler(initializer);
 			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
 			b.option(ChannelOption.TCP_NODELAY, true);
 			b.option(ChannelOption.SO_KEEPALIVE, true);
 
 			// Make the connection attempt.
-			channel = b.connect(host, port).syncUninterruptibly();
+			channel = b.connect("10.0.0.7",port).awaitUninterruptibly();
 
 			// want to monitor the connection to the server s.t. if we loose the
 			// connection, we can try to re-establish it.
@@ -192,6 +193,7 @@ public class CommConnection {
 					GeneratedMessage msg = conn.outbound.take();
 					if (ch.isWritable()) {
 						CommHandler handler = conn.connect().pipeline().get(CommHandler.class);
+						handler.setChannel(ch);
 
 						if (!handler.send(msg))
 							conn.outbound.putFirst(msg);

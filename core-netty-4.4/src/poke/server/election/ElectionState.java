@@ -19,17 +19,17 @@ import poke.core.Mgmt.LeaderElection.ElectAction;
 
 /**
  * hold the information about an election
- * 
+ *
  * TODO used as a simple data structure. If we were to support election
  * implementations created outside of the framework, this class would need
  * getter/setter noise.
- * 
+ *
  * @author gash
- * 
+ *
  */
 public class ElectionState {
 
-	
+
 	protected Integer id;
 	protected String desc;
 	protected int version = 0;
@@ -39,8 +39,34 @@ public class ElectionState {
 	protected int candidate;
 	protected ElectionListener listener;
 	protected boolean active = false;
+	protected int voteCount = 0;
+	protected int TERM = 0;
 
 	public boolean isActive() {
 		return id != null && active;
+	}
+
+	public void resetVoteCount() {
+		voteCount = 0;
+	}
+
+	public void incVoteCount() {
+		voteCount++;
+	}
+
+	public int getVoteCount() {
+		return voteCount;
+	}
+
+	public void resetTERM() {
+		TERM = 0;
+	}
+
+	public void incTERM() {
+		TERM++;
+	}
+
+	public int getTERM() {
+		return TERM;
 	}
 }

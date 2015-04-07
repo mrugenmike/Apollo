@@ -14,7 +14,7 @@
  * under the License.
  */
 package poke.server.managers;
-
+import poke.core.Mgmt.LeaderElection.ElectAction;
 import java.beans.Beans;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,6 +30,7 @@ import poke.server.conf.ServerConf;
 import poke.server.election.Election;
 import poke.server.election.ElectionListener;
 import poke.server.election.FloodMaxElection;
+import poke.server.election.Raft;
 
 /**
  * The election manager is used to determine leadership within the network. The
@@ -37,23 +38,23 @@ import poke.server.election.FloodMaxElection;
  * instance, a leader can be used to break ties or act as a scheduling dispatch.
  * However, the dependency on a leader in a decentralized design (or any design,
  * matter of fact) can lead to bottlenecks during heavy, peak loads.
- * 
+ *
  * TODO An election is a special case of voting. We should refactor to use only
  * voting.
- * 
+ *
  * QUESTIONS:
- * 
+ *
  * Can we look to the PAXOS alg. (see PAXOS Made Simple, Lamport, 2001) to model
  * our behavior where we have no single point of failure; each node within the
  * network can act as a consensus requester and coordinator for localized
  * decisions? One can envision this as all nodes accept jobs, and all nodes
  * request from the network whether to accept or reject the request/job.
- * 
+ *
  * Does a 'random walk' approach to consistent data replication work?
- * 
+ *
  * What use cases do we would want a central coordinator vs. a consensus
  * building model? How does this affect liveliness?
- * 
+ *
  * Notes:
  * <ul>
  * <li>Communication: the communication (channel) established by the heartbeat
@@ -61,9 +62,9 @@ import poke.server.election.FloodMaxElection;
  * creates a constraint that in order for internal (mgmt) tasks to be sent to
  * other nodes, the heartbeat must have already created the channel.
  * </ul>
- * 
+ *
  * @author gash
- * 
+ *
  */
 public class ElectionManager implements ElectionListener {
 	protected static Logger logger = LoggerFactory.getLogger("election");
@@ -72,7 +73,7 @@ public class ElectionManager implements ElectionListener {
 	private static ServerConf conf;
 
 	// number of times we try to get the leader when a node starts up
-	private int firstTime = 2;
+	int firstTime = 2;
 
 	/** The election that is in progress - only ONE! */
 	private Election election;
@@ -82,6 +83,17 @@ public class ElectionManager implements ElectionListener {
 	/** The leader */
 	Integer leaderNode;
 
+	public boolean isLeaderAlive(Management mgmt) {
+		if(leaderNode == null && (election == null || !election.isElectionInprogress()))
+			return false;
+		else
+			return true;
+	}
+
+	public void setLeader(Integer lNode) {
+		this.leaderNode = lNode;
+	}
+
 	public static ElectionManager initManager(ServerConf conf) {
 		ElectionManager.conf = conf;
 		instance.compareAndSet(null, new ElectionManager());
@@ -90,10 +102,10 @@ public class ElectionManager implements ElectionListener {
 
 	/**
 	 * Access a consistent instance for the life of the process.
-	 * 
+	 *
 	 * TODO do we need to have a singleton for this? What happens when a process
 	 * acts on behalf of separate interests?
-	 * 
+	 *
 	 * @return
 	 */
 	public static ElectionManager getInstance() {
@@ -103,7 +115,7 @@ public class ElectionManager implements ElectionListener {
 
 	/**
 	 * returns the leader of the network
-	 * 
+	 *
 	 * @return
 	 */
 	public Integer whoIsTheLeader() {
@@ -113,7 +125,7 @@ public class ElectionManager implements ElectionListener {
 	/**
 	 * initiate an election from within the server - most likely scenario is the
 	 * heart beat manager detects a failure of the leader and calls this method.
-	 * 
+	 *
 	 * Depending upon the algo. used (bully, flood, lcr, hs) the
 	 * manager.startElection() will create the algo class instance and forward
 	 * processing to it. If there was an election in progress and the election
@@ -123,7 +135,7 @@ public class ElectionManager implements ElectionListener {
 	 */
 	public void startElection() {
 		electionCycle = electionInstance().createElectionID();
-		
+
 		LeaderElection.Builder elb = LeaderElection.newBuilder();
 		elb.setElectId(electionCycle);
 		elb.setAction(ElectAction.DECLAREELECTION);
@@ -190,13 +202,19 @@ public class ElectionManager implements ElectionListener {
 		}
 
 		Management rtn = electionInstance().process(mgmt);
-		if (rtn != null)
-			ConnectionManager.broadcast(rtn);
+		if (rtn != null) {
+			if(rtn.getElection().getAction().getNumber() == ElectAction.DECLAREWINNER_VALUE) {
+				ConnectionManager.broadcast(rtn);
+			} else {
+				ConnectionManager.broadcast(rtn,rtn.getHeader().getOriginator());
+			}
+		}
+
 	}
 
 	/**
 	 * check the health of the leader (usually called after a HB update)
-	 * 
+	 *
 	 * @param mgmt
 	 */
 	public void assessCurrentState(Management mgmt) {
@@ -238,6 +256,7 @@ public class ElectionManager implements ElectionListener {
 		MgmtHeader.Builder mhb = MgmtHeader.newBuilder();
 		mhb.setOriginator(conf.getNodeId());
 		mhb.setTime(System.currentTimeMillis());
+		mhb.setSecurityCode(-999); // TODO add security
 
 		VectorClock.Builder rpb = VectorClock.newBuilder();
 		rpb.setNodeId(conf.getNodeId());
@@ -255,9 +274,9 @@ public class ElectionManager implements ElectionListener {
 		Management.Builder mb = Management.newBuilder();
 		mb.setHeader(mhb.build());
 		mb.setElection(elb.build());
-
+/*
 		// now send it to the requester
-		logger.info("Election started by node " + conf.getNodeId());
+		logger.info("Election started by node " + conf.getNodeId());*/
 		try {
 
 			ConnectionManager.getConnection(mgmt.getHeader().getOriginator(), true).write(mb.build());
@@ -300,7 +319,7 @@ public class ElectionManager implements ElectionListener {
 			synchronized (syncPt) {
 				if (election !=null)
 					return election;
-				
+
 				// new election
 				String clazz = ElectionManager.conf.getElectionImplementation();
 
@@ -316,6 +335,13 @@ public class ElectionManager implements ElectionListener {
 					if (election instanceof FloodMaxElection) {
 						logger.warn("Node " + conf.getNodeId() + " setting max hops to arbitrary value (4)");
 						((FloodMaxElection) election).setMaxHops(4);
+					}
+
+					//Test invocation of RAFT
+					// Added new invocation call -TODO yet to set the required variables  
+					else if (election instanceof Raft) {
+						logger.warn("Node " + conf.getNodeId() + " No need for HOPS in RAFT");
+
 					}
 
 				} catch (Exception e) {

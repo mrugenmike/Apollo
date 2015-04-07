@@ -112,6 +112,15 @@ public class ConnectionManager {
 			ch.write(mgmt);
 	}
 
+	public synchronized static void broadcast(Management mgmt,int toNode) {
+		if (mgmt == null)
+			return;
+
+		if(mgmtConnections.get(toNode)!=null) {
+			Channel ch = mgmtConnections.get(toNode);
+			ch.write(mgmt);
+		}
+	}
 	public static int getNumMgmtConnections() {
 		return mgmtConnections.size();
 	}

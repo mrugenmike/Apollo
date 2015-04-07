@@ -1,0 +1,18 @@
+option java_outer_classname = "ClusterMessageProto";
+option java_package = "poke.comm";
+message ClusterMessage{
+	optional string msgId = 1;
+	required string senderUserName = 2;
+	required string receiverUserName = 3;
+	optional string msgText = 4;
+	optional string msgImageName = 5;
+	optional bytes msgImageBits = 6;
+
+	enum MessageType
+	{
+	 	 REQUEST = 0;
+	 	SUCCESS = 1;
+
+    }
+    optional MessageType messageType = 7 [default = SUCCESS];
+}

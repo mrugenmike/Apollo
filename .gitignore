@@ -10,3 +10,12 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+.idea/
+core-netty-4.4/.idea/*
+core-netty-4.4/.idea/copyright/
+core-netty-4.4/.idea/modules.xml
+core-netty-4.4/.idea/vcs.xml
+out/
+        raft/src/main/main.iml
+

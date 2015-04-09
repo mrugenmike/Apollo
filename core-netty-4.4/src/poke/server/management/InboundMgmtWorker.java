@@ -84,8 +84,6 @@ public class InboundMgmtWorker extends Thread {
 				timer.cancel();
 				isRunning=false;
 				return;
-			}else if(i==1){
-				ElectionManager.getInstance().startElection();
 			}
 		}
 	};

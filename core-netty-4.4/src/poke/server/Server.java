@@ -24,19 +24,14 @@ import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.server.conf.JsonUtil;
-import poke.server.conf.NodeDesc;
-import poke.server.conf.ServerConf;
+import poke.server.conf.*;
 import poke.server.management.ManagementInitializer;
 import poke.server.management.ManagementQueue;
 import poke.server.managers.ElectionManager;
@@ -93,11 +88,11 @@ public class Server {
 	 * 
 	 * @param cfg
 	 */
-	public Server(File cfg) {
-		init(cfg);
+	public Server(File cfg,File clusterFile) {
+		init(cfg,clusterFile);
 	}
 
-	private void init(File cfg) {
+	private void init(File cfg, File clusterFile) {
 		if (!cfg.exists())
 			throw new RuntimeException(cfg.getAbsolutePath() + " not found");
 		// resource initialization - how message are processed
@@ -110,6 +105,12 @@ public class Server {
 			if (!verifyConf(conf))
 				throw new RuntimeException("verification of configuration failed");
 			ResourceFactory.initialize(conf);
+
+			byte[] clusterContent = new byte[(int)clusterFile.length()];
+			BufferedInputStream br2 = new BufferedInputStream(new FileInputStream(clusterFile));
+			br2.read(clusterContent);
+			final ClusterConf clusterConf = JsonUtil.decode(new String(clusterContent), ClusterConf.class);
+			ClusterConfFactory.setInstance(clusterConf);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
@@ -328,7 +329,7 @@ public class Server {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length != 1) {
+		if (args.length != 2) {
 			System.err.println("Usage: java " + Server.class.getClass().getName() + " conf-file");
 			System.exit(1);
 		}
@@ -339,7 +340,13 @@ public class Server {
 			System.exit(2);
 		}
 
-		Server svr = new Server(cfg);
+		File clusterConfig = new File(args[1]);
+		if (!cfg.exists()) {
+			Server.logger.error("configuration file does not exist: " + cfg);
+			System.exit(2);
+		}
+
+		Server svr = new Server(cfg,clusterConfig);
 		svr.run();
 	}
 }

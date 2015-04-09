@@ -124,7 +124,7 @@ public class CommConnection {
 			b.option(ChannelOption.SO_KEEPALIVE, true);
 
 			// Make the connection attempt.
-			channel = b.connect("10.0.0.7",port).awaitUninterruptibly();
+			channel = b.connect(host,port).awaitUninterruptibly();
 
 			// want to monitor the connection to the server s.t. if we loose the
 			// connection, we can try to re-establish it.

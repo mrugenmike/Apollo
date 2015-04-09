@@ -22,6 +22,7 @@ import poke.comm.App.Payload;
 import poke.comm.App.Ping;
 import poke.comm.App.PokeStatus;
 import poke.comm.App.Request;
+import poke.server.conf.ServerConf;
 import poke.server.resources.Resource;
 import poke.server.resources.ResourceUtil;
 
@@ -56,5 +57,10 @@ public class PingResource implements Resource {
 		Request reply = rb.build();
 
 		return reply;
+	}
+
+	@Override
+	public void setConfig(ServerConf conf) {
+
 	}
 }

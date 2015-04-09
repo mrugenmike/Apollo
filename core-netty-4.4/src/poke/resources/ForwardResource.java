@@ -72,6 +72,11 @@ public class ForwardResource implements Resource {
 		}
 	}
 
+	@Override
+	public void setConfig(ServerConf conf) {
+		this.cfg = conf;
+	}
+
 	/**
 	 * Find the nearest node that has not received the request.
 	 * 

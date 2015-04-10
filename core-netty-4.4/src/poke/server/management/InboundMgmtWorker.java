@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import poke.core.Mgmt.Management;
 import poke.server.management.ManagementQueue.ManagementQueueEntry;
+import poke.server.managers.HeartbeatManager;
+import poke.server.managers.NetworkManager;
 import poke.server.managers.RaftManager;
 
 /**
@@ -66,21 +68,68 @@ public class InboundMgmtWorker extends Thread {
 		while (true) {
 			if (!forever && ManagementQueue.inbound.size() == 0)
 				break;
+
 			try {
+				// block until a message is enqueued
 				ManagementQueueEntry msg = ManagementQueue.inbound.take();
+
 				if (logger.isDebugEnabled())
 					logger.debug("Inbound management message received");
 
 				Management mgmt = (Management) msg.req;
-				if (mgmt.hasRaftMessage()) {
+
+				System.out.println("Management****\n"+mgmt);
+
+
+				if(mgmt.hasRaftMessage())
 					RaftManager.getInstance().processRequest(mgmt);
+
+				else if (mgmt.hasBeat()) {
+					/**
+					 * Incoming: this is from a node we requested to create a
+					 * connection (edge) to. In other words, we need to track
+					 * that this connection is healthy by receiving HB messages.
+					 *
+					 * Incoming are connections this node establishes, which is
+					 * handled by the HeartbeatPusher.
+					 */
+					HeartbeatManager.getInstance().processRequest(mgmt);
+
+					/**
+					 * If we have a network (more than one node), check to see
+					 * if a election manager has been declared. If not, start an
+					 * election.
+					 *
+					 * The flaw to this approach is from a bootstrap PoV.
+					 * Consider a network of one node (myself), an event-based
+					 * monitor does not detect the leader is myself. However, I
+					 * cannot allow for each node joining the network to cause a
+					 * leader election.
+					 */
+					//ElectionManager.getInstance().assessCurrentState(mgmt);
+
+
+				} else if (mgmt.hasElection()) {
+					//ElectionManager.getInstance().processRequest(mgmt);
+				} else if (mgmt.hasGraph()) {
+					NetworkManager.getInstance().processRequest(mgmt, msg.channel);
 				}
-				if (!forever) {
-					logger.info("connection queue closing");
-				}
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				/*else if (mgmt.hasRaftMessage()){
+					CompleteRaftManager.getInstance().processRequest(mgmt);
+				}*/
+				else
+					logger.error("Unknown management message");
+
+			} catch (InterruptedException ie) {
+				break;
+			} catch (Exception e) {
+				logger.error("Unexpected processing failure, halting worker.", e);
+				break;
 			}
+		}
+
+		if (!forever) {
+			logger.info("connection queue closing");
 		}
 	}
 

@@ -12,7 +12,8 @@
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  * License for the specific language governing permissions and limitations
  * under the License.
- */
+ *//*
+
 package poke.server.managers;
 
 import io.netty.channel.Channel;
@@ -237,21 +238,25 @@ public class CompleteRaftManager {
 		//When another node sends a CompleteRaftMessage, the manager will check for 
 		//its term
 
-		/*	if(req.hasTerm()){
+		*/
+/*	if(req.hasTerm()){
 			if(req.getTerm() > this.currentTerm)
 				this.currentTerm = req.getTerm();
 		}
-		 */
+		 *//*
+
 
 		int electionActionVal = req.getAction().get;
 		switch (electionActionVal) {
 
 		case ElectionValue.APPEND_VALUE:
-			/*if(this.term < req.getTerm()){
+			*/
+/*if(this.term < req.getTerm()){
 				this.term = req.getTerm();
 				this.leaderId = mgmt.getHeader().getOriginator();
 
-			}*/
+			}*//*
+
 
 			System.out.println("Leader ID -->"+leaderId);
 			if(leaderId!=conf.getNodeId()){
@@ -312,3 +317,4 @@ public class CompleteRaftManager {
 
 
 }
+*/

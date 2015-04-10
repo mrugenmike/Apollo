@@ -1,6 +1,5 @@
 package poke.server.managers;
 
-import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import poke.core.Mgmt;
@@ -47,7 +46,7 @@ public class RaftManager {
     this.currentTerm = -1; // should read from storage
     }
 
-    private void sendVoteNotice(Mgmt.Management mgmt){
+   /* private void sendVoteNotice(Mgmt.Management mgmt){
 
 
         int destinationId = mgmt.getHeader().getOriginator();
@@ -85,7 +84,7 @@ public class RaftManager {
 
         //if(this.currentTerm > term) implement this scenario to make our raft
         //partition tolerant
-    }
+    }*/
 
     private int getRandomElectionTimeOut(){
         int randomTimeOut = new Random().nextInt(10000 - 5000 + 1) + 5000;
@@ -96,7 +95,7 @@ public class RaftManager {
 
     private boolean isLeader() {
         // TODO Auto-generated method stub
-        if((voteCount>((ConnectionManager.getNumMgmtConnections())/2)))
+        if((voteCount.get()>((ConnectionManager.getNumMgmtConnections())/2)))
             return true;
         else
             return false;
@@ -117,37 +116,14 @@ public class RaftManager {
         }
     }
 
-
-    private void sendAppendNotice(){
-
-        Mgmt.Management.Builder mgmtBuilder = Mgmt.Management.newBuilder();
-
-        Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
-        mgmtHeaderBuilder.setOriginator(conf.getNodeId());
-
-        CompleteRaftMessage.Builder raftMsgBuilder = CompleteRaftMessage.newBuilder();
-        //	raftMsgBuilder.setAction(ElectionAction.LEADER);
-
-        raftMsgBuilder.setTerm(currentTerm).setAction(ElectionAction.APPEND);
-
-        Mgmt.Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
-                .setRaftMessage(raftMsgBuilder.build()).build();
-
-        ConnectionManager.broadcastAndFlush(mgmt);
-    }
-
-
     // Time to celebrate on becoming new Leader
     private void sendLeaderNotice()  {
-        //sendAppendNotice();
-
-
         Thread t = new Thread(new Runnable(){
             @Override
             public void run(){
                 while (true){
                     System.out.println("Sending Append Notices!!");
-                    sendAppendNotice();
+                    ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
@@ -213,6 +189,7 @@ public class RaftManager {
                         electionTimeout.cancel();
                         stateMachine.becomeLeader();
                         this.leaderId = conf.getNodeId();
+                        ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
 
                     }else if(stateMachine.isCandidate() && !timedOut){
                         voteCount.incrementAndGet();

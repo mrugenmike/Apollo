@@ -21,11 +21,13 @@ import io.netty.channel.ChannelFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import poke.comm.App.Request;
-import poke.core.Mgmt.*;
+import poke.core.Mgmt;
+import poke.core.Mgmt.Management;
+import poke.core.Mgmt.MgmtHeader;
+import poke.core.Mgmt.RaftMsg;
+import poke.core.Mgmt.RequestVoteMessage;
 
 import java.util.HashMap;
-
-import static poke.core.Mgmt.*;
 
 /**
  * the connection map for server-to-server communication.
@@ -177,5 +179,21 @@ public class ConnectionManager {
 		mgmtBuilder.setRaftMessage(raftMsgbuilder.build());
 		logger.info("Node {} became candidate and sending requests!",candidateId);
 		ConnectionManager.broadCastImmediately(mgmtBuilder.build());
+	}
+
+	public synchronized static void sendLeaderNotice(int originator, int ternId){
+
+			Mgmt.Management.Builder mgmtBuilder = Mgmt.Management.newBuilder();
+
+			Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
+			mgmtHeaderBuilder.setOriginator(originator);
+
+			RaftMsg.Builder raftMsgBuilder = mgmtBuilder.getRaftMessageBuilder();
+			raftMsgBuilder.setTerm(ternId).setAction(RaftMsg.ElectionAction.APPEND);
+
+			Mgmt.Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
+					.setRaftMessage(raftMsgBuilder.build()).build();
+
+			ConnectionManager.broadCastImmediately(mgmt);
 	}
 }

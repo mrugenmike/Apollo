@@ -155,6 +155,7 @@ message RaftMsg {
     REQUESTVOTE = 1;
     LEADER = 2;
     VOTE=3;
+    APPEND=4;
   }
 }
 

@@ -204,10 +204,10 @@ public class RaftManager {
                         stateMachine.becomeFollower();
                         resetElectionTimeout();
                     }
+                    break;
                 }
                 default:
                     break;
-
             }
         }
 

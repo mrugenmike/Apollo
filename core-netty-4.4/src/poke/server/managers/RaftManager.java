@@ -8,6 +8,7 @@ import poke.server.conf.ServerConf;
 import poke.server.election.RaftStateMachine;
 import poke.server.election.StateMachine;
 
+import java.util.Date;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -54,6 +55,8 @@ public class RaftManager {
 
         Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
         mgmtHeaderBuilder.setOriginator(conf.getNodeId());
+        mgmtHeaderBuilder.setSecurityCode(-999);
+        mgmtHeaderBuilder.setTime(new Date().getTime());
 
         Mgmt.RaftMsg.Builder raftMsgBuilder = Mgmt.RaftMsg.newBuilder();
         //	raftMsgBuilder.setAction(ElectionAction.LEADER);

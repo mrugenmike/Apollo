@@ -13,10 +13,7 @@
 hs_err_pid*
 
 .idea/
-core-netty-4.4/.idea/*
-core-netty-4.4/.idea/copyright/
-core-netty-4.4/.idea/modules.xml
-core-netty-4.4/.idea/vcs.xml
+core-netty-4.4/.idea
 out/
-        raft/src/main/main.iml
+raft/src/main/main.iml
 

@@ -83,7 +83,6 @@ public class InboundMgmtWorker extends Thread {
 
 				if(mgmt.hasRaftMessage())
 					RaftManager.getInstance().processRequest(mgmt);
-
 				else if (mgmt.hasBeat()) {
 					/**
 					 * Incoming: this is from a node we requested to create a

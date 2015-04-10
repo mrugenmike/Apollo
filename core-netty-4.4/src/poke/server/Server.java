@@ -290,6 +290,7 @@ public class Server {
 		HeartbeatPusher conn = HeartbeatPusher.getInstance();
 		conn.start();
 		RaftManager.initManager(conf);
+		RaftManager.getInstance().initRaft();
 
 		logger.info("Server " + conf.getNodeId() + ", managers initialized");
 	}

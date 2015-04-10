@@ -166,7 +166,7 @@ public class RaftManager {
     public void processRequest(Mgmt.Management mgmt) {
 
         final Mgmt.RaftMsg raftMessage = mgmt.getRaftMessage();
-
+        logger.info("Processing request now {}",raftMessage);
 
         if(raftMessage.hasAction()){
             int electionActionVal = raftMessage.getAction().getNumber();
@@ -177,31 +177,42 @@ public class RaftManager {
                         stateMachine.becomeFollower();
                         this.currentTerm = raftMessage.getTerm();
                         this.leaderId = mgmt.getHeader().getOriginator();
-                        ConnectionManager.sendVote(mgmt,conf.getNodeId());
-                        resetElectionTimeout();
+                        ConnectionManager.sendVote(mgmt, conf.getNodeId());
+                        //resetElectionTimeout();
                     }else{
                         //reject the message and continue in candidate state
                     }
                     break;
                 }
                 case Mgmt.RaftMsg.ElectionAction.VOTE_VALUE:{
+                    logger.info("Vote received ");
                     if(voteCount.get()>=ConnectionManager.getNumMgmtConnections()/2){
                         electionTimeout.cancel();
                         stateMachine.becomeLeader();
                         this.leaderId = conf.getNodeId();
                         ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
 
-                    }else if(stateMachine.isCandidate() && !timedOut){
+                    }/*else if(stateMachine.isCandidate() && !timedOut){
                         voteCount.incrementAndGet();
                     } else if(timedOut){
                         resetElectionTimeout();
                         startElection();
-                    }
+                    }*/
                     break;
                 }
                 case Mgmt.RaftMsg.ElectionAction.LEADER_VALUE:{
                     if(raftMessage.getTerm()>=currentTerm){
                         stateMachine.becomeFollower();
+                        resetElectionTimeout();
+                    }
+                    break;
+                }
+                case Mgmt.RaftMsg.ElectionAction.APPEND_VALUE:{
+                    if(leaderId!=conf.getNodeId()){
+                        stateMachine.becomeFollower();
+                        leaderId = mgmt.getHeader().getOriginator();
+                        currentTerm = mgmt.getRaftMessage().getTerm();
+                        votedFor =-1;
                         resetElectionTimeout();
                     }
                     break;

@@ -25,6 +25,7 @@ import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.RaftMsg;
 import poke.core.Mgmt.RequestVoteMessage;
 
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -142,6 +143,8 @@ public class ConnectionManager {
 		Management.Builder mgmtBuilder = Management.newBuilder();
 		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
 		mgmtHeaderBuilder.setOriginator(originatorId); //setting self as voter
+		mgmtHeaderBuilder.setSecurityCode(-999);
+		mgmtHeaderBuilder.setTime(new Date().getTime());
 
 		final RaftMsg.Builder raftMessageBuilder = mgmtBuilder.getRaftMessageBuilder();
 		raftMessageBuilder.setTerm(mgmt.getRaftMessage().getTerm()).setAction(RaftMsg.ElectionAction.VOTE); //setting action so that candidate can use it appropriately.
@@ -165,6 +168,8 @@ public class ConnectionManager {
 		MgmtHeader header = mgmtBuilder.getHeader();
 		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
 		mgmtHeaderBuilder.setOriginator(candidateId);
+		mgmtHeaderBuilder.setSecurityCode(-999);
+		mgmtHeaderBuilder.setTime(new Date().getTime());
 
 		mgmtBuilder.setHeader(mgmtHeaderBuilder.build());
 		mgmtBuilder.setRaftMessage(raftMsgbuilder.build());

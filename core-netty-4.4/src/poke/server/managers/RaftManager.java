@@ -199,6 +199,12 @@ public class RaftManager {
                     }
                     break;
                 }
+                case Mgmt.RaftMsg.ElectionAction.LEADER_VALUE:{
+                    if(raftMessage.getTerm()>=currentTerm){
+                        stateMachine.becomeFollower();
+                        resetElectionTimeout();
+                    }
+                }
                 default:
                     break;
 

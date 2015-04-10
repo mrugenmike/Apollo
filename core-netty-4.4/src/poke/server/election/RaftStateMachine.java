@@ -16,6 +16,7 @@ public class RaftStateMachine implements StateMachine {
 
 
     public  RaftStateMachine(){
+        logger.info("Node became a follower");
         this.machineState = State.Follower;
     }
 
@@ -26,6 +27,7 @@ public class RaftStateMachine implements StateMachine {
 
     @Override
     public void reset() {
+        logger.info("RESET: Node became a follower");
         machineState = State.Follower;
 
     }
@@ -37,6 +39,7 @@ public class RaftStateMachine implements StateMachine {
 
     @Override
     public void becomeCandidate() {
+        logger.info("Node became a candidate");
         machineState = State.Candidate;
     }
 
@@ -52,6 +55,7 @@ public class RaftStateMachine implements StateMachine {
 
     @Override
     public void becomeLeader() {
+        logger.info("Node became a Leader");
         machineState = State.Leader;
     }
 

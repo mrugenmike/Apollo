@@ -42,7 +42,7 @@ import java.util.HashMap;
  * 
  */
 public class ConnectionManager {
-	protected static Logger logger = LoggerFactory.getLogger("management");
+	protected static Logger logger = LoggerFactory.getLogger("ConnectionManager");
 
 	/** node ID to channel */
 	private static HashMap<Integer, Channel> connections = new HashMap<Integer, Channel>();
@@ -58,7 +58,7 @@ public class ConnectionManager {
 	}
 
 	public static Channel getConnection(Integer nodeId, boolean isMgmt) {
-
+	logger.info("fetching channel for node {}",nodeId);
 		if (isMgmt)
 			return mgmtConnections.get(nodeId);
 		else
@@ -177,19 +177,26 @@ public class ConnectionManager {
 		ConnectionManager.broadCastImmediately(mgmtBuilder.build());
 	}
 
-	public synchronized static void sendLeaderNotice(int originator, int ternId){
+	public synchronized static void sendLeaderNotice(final int originator, final int termId){
 
-			Mgmt.Management.Builder mgmtBuilder = Mgmt.Management.newBuilder();
 
-			Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
-			mgmtHeaderBuilder.setOriginator(originator);
-
-			RaftMsg.Builder raftMsgBuilder = mgmtBuilder.getRaftMessageBuilder();
-			raftMsgBuilder.setTerm(ternId).setAction(RaftMsg.ElectionAction.APPEND);
-
-			Mgmt.Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
-					.setRaftMessage(raftMsgBuilder.build()).build();
-
-			ConnectionManager.broadCastImmediately(mgmt);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					while (true){
+						logger.info("Sending AppendNotices from node {} in term {}",originator,termId);
+						Mgmt.Management.Builder mgmtBuilder = Mgmt.Management.newBuilder();
+						Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
+						mgmtHeaderBuilder.setOriginator(originator);
+						mgmtHeaderBuilder.setSecurityCode(-999);
+						mgmtHeaderBuilder.setTime(new Date().getTime());
+						RaftMsg.Builder raftMsgBuilder = mgmtBuilder.getRaftMessageBuilder();
+						raftMsgBuilder.setTerm(termId).setAction(RaftMsg.ElectionAction.APPEND);
+						Mgmt.Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
+								.setRaftMessage(raftMsgBuilder.build()).build();
+						ConnectionManager.broadCastImmediately(mgmt);
+					}
+				}
+			}).start();
 	}
 }

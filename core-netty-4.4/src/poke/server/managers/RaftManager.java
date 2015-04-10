@@ -1,5 +1,6 @@
 package poke.server.managers;
 
+import gash.leaderelection.raft.RaftMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import poke.core.Mgmt;
@@ -46,48 +47,26 @@ public class RaftManager {
     this.currentTerm = -1; // should read from storage
     }
 
-   /* private void sendVoteNotice(Mgmt.Management mgmt){
 
+    private void sendAppendNotice(){
 
-        int destinationId = mgmt.getHeader().getOriginator();
-        int term = mgmt.getRaftMessage().getTerm();
-        if(this.currentTerm < term){
-            this.currentTerm = term;
+        Mgmt.Management.Builder mgmtBuilder = Mgmt.Management.newBuilder();
 
-            Mgmt.Management.Builder mgmtBuilder = Mgmt.Management.newBuilder();
-            Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
-            mgmtHeaderBuilder.setOriginator(conf.getNodeId()); //setting self as voter
-            CompleteRaftMessage.Builder raftMsgBuilder= CompleteRaftMessage.newBuilder();
-            raftMsgBuilder.setTerm(currentTerm)
-                    .setAction(ElectionAction.VOTE); //setting action so that candidate can use it appropriately.
-            Mgmt.Management finalMsg = mgmtBuilder.setHeader(mgmtHeaderBuilder.build()).setRaftMessage(raftMsgBuilder.build()).build();
-            Channel candidateChannel = ConnectionManager.getConnection(destinationId, true);
-            System.out.println("Sending to NodeId --> "+destinationId);
+        Mgmt.MgmtHeader.Builder mgmtHeaderBuilder = Mgmt.MgmtHeader.newBuilder();
+        mgmtHeaderBuilder.setOriginator(conf.getNodeId());
 
-            candidateChannel.writeAndFlush(finalMsg);
+        Mgmt.RaftMsg.Builder raftMsgBuilder = Mgmt.RaftMsg.newBuilder();
+        //	raftMsgBuilder.setAction(ElectionAction.LEADER);
 
-            System.out.println("Node "+conf.getNodeId()+" voted node "+destinationId);
-            electionTimeout.cancel();
-            electionTimeout = new Timer();
-            electionTimeout.schedule (new TimerTask() {
+        raftMsgBuilder.setTerm(currentTerm).setAction(Mgmt.RaftMsg.ElectionAction.APPEND);
 
-                @Override
-                public void run() {
-                    System.out.println("Append not called by leader. Re-election!!!");
-                    resetNode();
-                    startElection();
+        Mgmt.Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
+                .setRaftMessage(raftMsgBuilder.build()).build();
 
-                }
-            }, getRandomElectionTimeOut());
-
-        }
-
-        //if(this.currentTerm > term) implement this scenario to make our raft
-        //partition tolerant
-    }*/
-
+        ConnectionManager.broadCastImmediately(mgmt);
+    }
     private int getRandomElectionTimeOut(){
-        int randomTimeOut = new Random().nextInt(10000 - 5000 + 1) + 5000;
+        int randomTimeOut = new Random().nextInt(8000) + 8000;
         logger.info("Current Timeout value is {} ",randomTimeOut);
         return randomTimeOut;
     }
@@ -191,6 +170,7 @@ public class RaftManager {
                         stateMachine.becomeLeader();
                         this.leaderId = conf.getNodeId();
                         ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
+                        sendAppendNotice();
 
                     }/*else if(stateMachine.isCandidate() && !timedOut){
                         voteCount.incrementAndGet();

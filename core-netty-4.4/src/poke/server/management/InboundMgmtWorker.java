@@ -84,30 +84,7 @@ public class InboundMgmtWorker extends Thread {
 				if(mgmt.hasRaftMessage())
 					RaftManager.getInstance().processRequest(mgmt);
 				else if (mgmt.hasBeat()) {
-					/**
-					 * Incoming: this is from a node we requested to create a
-					 * connection (edge) to. In other words, we need to track
-					 * that this connection is healthy by receiving HB messages.
-					 *
-					 * Incoming are connections this node establishes, which is
-					 * handled by the HeartbeatPusher.
-					 */
 					HeartbeatManager.getInstance().processRequest(mgmt);
-
-					/**
-					 * If we have a network (more than one node), check to see
-					 * if a election manager has been declared. If not, start an
-					 * election.
-					 *
-					 * The flaw to this approach is from a bootstrap PoV.
-					 * Consider a network of one node (myself), an event-based
-					 * monitor does not detect the leader is myself. However, I
-					 * cannot allow for each node joining the network to cause a
-					 * leader election.
-					 */
-					//ElectionManager.getInstance().assessCurrentState(mgmt);
-
-
 				} else if (mgmt.hasElection()) {
 					//ElectionManager.getInstance().processRequest(mgmt);
 				} else if (mgmt.hasGraph()) {

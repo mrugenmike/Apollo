@@ -121,6 +121,43 @@ message MgmtHeader {
     optional int32 toNode = 8;
 }
 
+// ----------------------------------------------------------------------------
+message RequestVoteMessage {
+
+  optional int32 candidate_id = 1;
+  optional int32 last_log_index = 2;
+  optional int32 last_log_term = 3;
+  //optional int32 term =4;
+  optional bool vote_granted = 5;
+
+}
+
+message AppendMessage {
+  optional int32 log_index = 1;
+  optional int32 prev_log_index = 2;
+  optional int32 prev_term = 3;
+  optional int32 leader_id = 4;
+
+  optional bool success = 6;
+  optional int32 leader_commit = 7;
+  repeated LogEntries entries = 8;
+}
+
+message LogEntries{
+}
+message RaftMsg {
+  required int32 term = 1;
+  required ElectionAction action = 2;
+  optional RequestVoteMessage request_vote = 3;
+  optional AppendMessage append_message = 4;
+
+  enum ElectionAction {
+    REQUESTVOTE = 1;
+    LEADER = 2;
+    VOTE=3;
+  }
+}
+
 // internal communication payload
 message Management {
    required MgmtHeader header = 1;
@@ -138,4 +175,8 @@ message Management {
    optional VotingBallot vote_declare = 7;
    optional VotingCast vote_cast = 8;
    optional VotingStatus vote_status = 9;
+
+   //RaftMessage
+   optional RaftMsg raftMessage=10;
 }	
+

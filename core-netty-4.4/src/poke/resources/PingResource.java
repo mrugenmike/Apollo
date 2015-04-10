@@ -17,7 +17,6 @@ package poke.resources;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import poke.comm.App.Payload;
 import poke.comm.App.Ping;
 import poke.comm.App.PokeStatus;
@@ -61,6 +60,5 @@ public class PingResource implements Resource {
 
 	@Override
 	public void setConfig(ServerConf conf) {
-
 	}
 }

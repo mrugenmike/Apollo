@@ -15,16 +15,11 @@
  */
 package poke.server.management;
 
-import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import poke.core.Mgmt.Management;
 import poke.server.management.ManagementQueue.ManagementQueueEntry;
-import poke.server.managers.ElectionManager;
-import poke.server.managers.HeartbeatManager;
-import poke.server.managers.JobManager;
-import poke.server.managers.NetworkManager;
+import poke.server.managers.RaftManager;
 
 /**
  * The inbound management worker is the cortex for all work related to the
@@ -58,36 +53,6 @@ public class InboundMgmtWorker extends Thread {
 	int workerId;
 	boolean forever = true;
 
-	int max=8;
-	int min=2;
-
-	Random rand = new Random();
-
-	int  randomNum = rand.nextInt((max - min) + 1) + min;
-	boolean isRunning=false;
-
-
-	Timer timer = new Timer();
-
-
-	TimerTask task = new TimerTask() {
-		int i = randomNum;
-
-		// if(!isRunning){
-		public void run() {
-			System.out.println(i--);
-			isRunning=true;
-			if (i< 0)
-			{
-
-				i=randomNum;
-				timer.cancel();
-				isRunning=false;
-				return;
-			}
-		}
-	};
-
 	public InboundMgmtWorker(ThreadGroup tgrp, int workerId) {
 		super(tgrp, "inbound-mgmt-" + workerId);
 		this.workerId = workerId;
@@ -101,88 +66,22 @@ public class InboundMgmtWorker extends Thread {
 		while (true) {
 			if (!forever && ManagementQueue.inbound.size() == 0)
 				break;
-
 			try {
-				// block until a message is enqueued
 				ManagementQueueEntry msg = ManagementQueue.inbound.take();
-
 				if (logger.isDebugEnabled())
 					logger.debug("Inbound management message received");
 
 				Management mgmt = (Management) msg.req;
-				if (mgmt.hasBeat()) {
-					/**
-					 * Incoming: this is from a node we requested to create a
-					 * connection (edge) to. In other words, we need to track
-					 * that this connection is healthy by receiving HB messages.
-					 *
-					 * Incoming are connections this node establishes, which is
-					 * handled by the HeartbeatPusher.
-					 */
-					HeartbeatManager.getInstance().processRequest(mgmt);
-
-					/**
-					 * If we have a network (more than one node), check to see
-					 * if a election manager has been declared. If not, start an
-					 * election.
-					 *
-					 * The flaw to this approach is from a bootstrap PoV.
-					 * Consider a network of one node (myself), an event-based
-					 * monitor does not detect the leader is myself. However, I
-					 * cannot allow for each node joining the network to cause a
-					 * leader election.
-					 */
-
-					if(!ElectionManager.getInstance().isLeaderAlive(mgmt))
-					{
-						System.out.println("Random:"+randomNum);
-
-
-
-						try{
-							timer.scheduleAtFixedRate(task, 0, 1000);
-						}
-						catch(Exception e)
-						{
-							timer.cancel();
-							System.out.println("Continue");
-							final Timer timer = new Timer();
-							timer.scheduleAtFixedRate(new TimerTask() {
-
-								int i = randomNum;
-								boolean isRunning=false;
-								// if(!isRunning){
-								public void run() {
-									System.out.println(i--);
-									isRunning=true;
-									if (i< 0)
-									{ timer.cancel();
-										isRunning=false;
-									}
-								}
-								// }
-							}, 0, 1000);
-						}
-
-						//ElectionManager.getInstance().assessCurrentState(mgmt); //Not required for RAFT
-					}
-				} else if (mgmt.hasElection()) {
-					ElectionManager.getInstance().processRequest(mgmt);
-				} else if (mgmt.hasGraph()) {
-					NetworkManager.getInstance().processRequest(mgmt, msg.channel);
-				} else
-					logger.error("Unknown management message");
-
-			} catch (InterruptedException ie) {
-				break;
-			} catch (Exception e) {
-				logger.error("Unexpected processing failure, halting worker.", e);
-				break;
+				if (mgmt.hasRaftMessage()) {
+					RaftManager.getInstance().processRequest(mgmt);
+				}
+				if (!forever) {
+					logger.info("connection queue closing");
+				}
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
-
-		if (!forever) {
-			logger.info("connection queue closing");
-		}
 	}
+
 }

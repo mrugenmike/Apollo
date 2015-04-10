@@ -10,7 +10,7 @@ message ClusterMessage{
 
 	enum MessageType
 	{
-	 	 REQUEST = 0;
+	 	REQUEST = 0;
 	 	SUCCESS = 1;
 
     }

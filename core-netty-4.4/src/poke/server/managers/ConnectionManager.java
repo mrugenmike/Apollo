@@ -16,14 +16,16 @@
 package poke.server.managers;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import poke.comm.App.Request;
+import poke.core.Mgmt.*;
 
 import java.util.HashMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import poke.comm.App.Request;
-import poke.core.Mgmt.Management;
+import static poke.core.Mgmt.*;
 
 /**
  * the connection map for server-to-server communication.
@@ -112,6 +114,14 @@ public class ConnectionManager {
 			ch.write(mgmt);
 	}
 
+	public synchronized  static  void broadCastImmediately(Management mgmt){
+		if (mgmt == null)
+			return;
+
+		for (Channel ch : mgmtConnections.values())
+			ch.writeAndFlush(mgmt);
+	}
+
 	public synchronized static void broadcast(Management mgmt,int toNode) {
 		if (mgmt == null)
 			return;
@@ -123,5 +133,49 @@ public class ConnectionManager {
 	}
 	public static int getNumMgmtConnections() {
 		return mgmtConnections.size();
+	}
+
+	public synchronized static void sendVote(Management mgmt,int originatorId) {
+
+		final int destinationId = mgmt.getHeader().getOriginator();
+		int term = mgmt.getRaftMessage().getTerm();
+		Management.Builder mgmtBuilder = Management.newBuilder();
+		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
+		mgmtHeaderBuilder.setOriginator(originatorId); //setting self as voter
+
+		final RaftMsg.Builder raftMessageBuilder = mgmtBuilder.getRaftMessageBuilder();
+		raftMessageBuilder.setTerm(mgmt.getRaftMessage().getTerm()).setAction(RaftMsg.ElectionAction.VOTE); //setting action so that candidate can use it appropriately.
+		Management finalMsg = mgmtBuilder.setHeader(mgmtHeaderBuilder.build()).setRaftMessage(raftMessageBuilder.build()).build();
+		Channel candidateChannel = ConnectionManager.getConnection(destinationId, true);
+		logger.info("Sending Vote to Node {}", destinationId);
+		final ChannelFuture channelFuture = candidateChannel.writeAndFlush(finalMsg);
+		channelFuture.addListener(new ChannelFutureListener() {
+			@Override
+			public void operationComplete(ChannelFuture future) throws Exception {
+				if(future.isDone() && future.isSuccess())
+				logger.info("Vote sent successfully to Node {}",destinationId);
+			}
+		});
+	}
+
+	//Prepare Raft Message for Voting
+	public synchronized static void sendRequestVote(int candidateId,int termId) {
+
+		RequestVoteMessage.Builder reqVoteBuilder = RequestVoteMessage.newBuilder();
+		reqVoteBuilder.setCandidateId(candidateId);
+		Management.Builder mgmtBuilder = Management.newBuilder();
+
+		RaftMsg.Builder raftMsgbuilder = mgmtBuilder.getRaftMessageBuilder();
+		raftMsgbuilder.setAction(RaftMsg.ElectionAction.REQUESTVOTE).setTerm(termId).setRequestVote(reqVoteBuilder.build());
+
+
+		MgmtHeader header = mgmtBuilder.getHeader();
+		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
+		mgmtHeaderBuilder.setOriginator(candidateId);
+
+		mgmtBuilder.setHeader(mgmtHeaderBuilder.build());
+		mgmtBuilder.setRaftMessage(raftMsgbuilder.build());
+		logger.info("Node {} became candidate and sending requests!",candidateId);
+		ConnectionManager.broadCastImmediately(mgmtBuilder.build());
 	}
 }

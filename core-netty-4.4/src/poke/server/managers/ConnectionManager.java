@@ -137,8 +137,8 @@ public class ConnectionManager {
 	}
 
 	public synchronized static void sendVote(Management mgmt,int originatorId) {
-
 		final int destinationId = mgmt.getHeader().getOriginator();
+		logger.info("Sending Vote--> to Node {} from Node {}",originatorId,destinationId);
 		int term = mgmt.getRaftMessage().getTerm();
 		Management.Builder mgmtBuilder = Management.newBuilder();
 		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();

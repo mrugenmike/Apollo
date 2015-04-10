@@ -59,7 +59,6 @@ public class RaftManager {
         mgmtHeaderBuilder.setTime(new Date().getTime());
 
         Mgmt.RaftMsg.Builder raftMsgBuilder = Mgmt.RaftMsg.newBuilder();
-        //	raftMsgBuilder.setAction(ElectionAction.LEADER);
 
         raftMsgBuilder.setTerm(currentTerm).setAction(Mgmt.RaftMsg.ElectionAction.APPEND);
 

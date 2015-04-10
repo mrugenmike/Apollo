@@ -23,24 +23,20 @@ import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-
-import java.io.*;
-import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import poke.server.conf.*;
 import poke.server.management.ManagementInitializer;
 import poke.server.management.ManagementQueue;
-import poke.server.managers.ElectionManager;
-import poke.server.managers.HeartbeatData;
-import poke.server.managers.HeartbeatManager;
-import poke.server.managers.HeartbeatPusher;
-import poke.server.managers.JobManager;
-import poke.server.managers.NetworkManager;
+import poke.server.managers.*;
 import poke.server.resources.ResourceFactory;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Note high surges of messages can close down the channel if the handler cannot
@@ -273,7 +269,7 @@ public class Server {
 
 		// create manager for leader election. The number of votes (default 1)
 		// is used to break ties where there are an even number of nodes.
-		electionMgr = ElectionManager.initManager(conf);
+		//electionMgr = ElectionManager.initManager(conf);
 
 		// create manager for accepting jobs
 		jobMgr = JobManager.initManager(conf);
@@ -288,11 +284,12 @@ public class Server {
 			// fn(from, to)
 			HeartbeatPusher.getInstance().connectToThisNode(conf.getNodeId(), node);
 		}
-		heartbeatMgr.start();
+		//heartbeatMgr.start();
 
 		// manage heartbeatMgr connections
 		HeartbeatPusher conn = HeartbeatPusher.getInstance();
 		conn.start();
+		RaftManager.initManager(conf);
 
 		logger.info("Server " + conf.getNodeId() + ", managers initialized");
 	}

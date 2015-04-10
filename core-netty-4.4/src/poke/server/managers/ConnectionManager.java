@@ -16,8 +16,6 @@
 package poke.server.managers;
 
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import poke.comm.App.Request;
@@ -150,14 +148,7 @@ public class ConnectionManager {
 		Management finalMsg = mgmtBuilder.setHeader(mgmtHeaderBuilder.build()).setRaftMessage(raftMessageBuilder.build()).build();
 		Channel candidateChannel = ConnectionManager.getConnection(destinationId, true);
 		logger.info("Sending Vote to Node {}", destinationId);
-		final ChannelFuture channelFuture = candidateChannel.writeAndFlush(finalMsg);
-		channelFuture.addListener(new ChannelFutureListener() {
-			@Override
-			public void operationComplete(ChannelFuture future) throws Exception {
-				if(future.isDone() && future.isSuccess())
-				logger.info("Vote sent successfully to Node {}",destinationId);
-			}
-		});
+		candidateChannel.writeAndFlush(finalMsg);
 	}
 
 	//Prepare Raft Message for Voting

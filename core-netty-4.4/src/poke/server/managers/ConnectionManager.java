@@ -195,6 +195,11 @@ public class ConnectionManager {
 						Mgmt.Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
 								.setRaftMessage(raftMsgBuilder.build()).build();
 						ConnectionManager.broadCastImmediately(mgmt);
+						try {
+							Thread.sleep(2000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
 					}
 				}
 			}).start();

@@ -178,8 +178,6 @@ public class ConnectionManager {
 	}
 
 	public synchronized static void sendLeaderNotice(final int originator, final int termId){
-
-
 			new Thread(new Runnable() {
 				@Override
 				public void run() {

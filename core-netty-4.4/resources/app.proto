@@ -173,7 +173,7 @@ message RoutingPath {
 }
 
 message Header {  
-    required Routing routing_id = 1;
+    optional Routing routing_id = 1;
     required int32 originator = 2;
     optional string tag = 3;
     optional int64 time = 4;
@@ -200,7 +200,10 @@ message Header {
         JOBS = 4;
         REPORTS = 10;
         MANAGE = 100;
+        REGISTER = 5;
         }
+
+    //check if cluster message or client msg
 }
 
 // these are commands from external (and possible internal) clients
@@ -217,11 +220,45 @@ message Payload {
     optional JobStatus job_status = 13;
     optional NameSpaceStatus space_status = 12;
    
+    optional ClusterMessage cluster_message = 4;
+    optional ClientMessage client_message = 5;
     // TBD
     // reports
 }
 
 message Request {
-    required Header header = 1;
-    required Payload body = 2;
+    optional Header header = 1;
+    optional Payload body = 2;
+    optional JoinMessage join_message = 3;
+}
+
+message JoinMessage {
+    optional int32 from_node_id = 1;
+    optional int32 to_node_id = 2;
+    optional int32 from_cluster_id = 3;
+    optional int 32 to_cluster_id = 4;
+}
+
+message ClientMessage{
+  optional string msgId = 1;
+  optional int32 senderUserName = 2;
+  optional int32 receiverUserName = 3;
+  optional string msgText = 4;
+  optional string msgImageName = 5;
+  optional bytes msgImageBits = 6;
+  optional MessageType messageType = 7 [default = SUCCESS];
+  optional bool isClient = 8 [default = false];
+  optional bool broadcastInternal = 9 [default = false];
+  enum MessageType
+  {
+    REQUEST = 0;
+    SUCCESS = 1;
+
+    }
+   
+}
+
+message ClusterMessage{
+  optional ClientMessage client_message = 1;
+  optional int32 cluster_id=2;
 }

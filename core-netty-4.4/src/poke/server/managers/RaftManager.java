@@ -108,7 +108,6 @@ public class RaftManager {
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -116,7 +115,6 @@ public class RaftManager {
         });
 
         t.start();
-
     }
 
     private void resetElectionTimeout(){
@@ -159,7 +157,6 @@ public class RaftManager {
                         this.currentTerm = raftMessage.getTerm();
                         this.leaderId = mgmt.getHeader().getOriginator();
                         ConnectionManager.sendVote(mgmt, conf.getNodeId());
-                        //resetElectionTimeout();
                     }else{
                         //reject the message and continue in candidate state
                     }
@@ -173,13 +170,7 @@ public class RaftManager {
                         this.leaderId = conf.getNodeId();
                         ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
                         sendAppendNotice();
-
-                    }/*else if(stateMachine.isCandidate() && !timedOut){
-                        voteCount.incrementAndGet();
-                    } else if(timedOut){
-                        resetElectionTimeout();
-                        startElection();
-                    }*/
+                    }
                     break;
                 }
                 case Mgmt.RaftMsg.ElectionAction.LEADER_VALUE:{
@@ -203,8 +194,5 @@ public class RaftManager {
                     break;
             }
         }
-
-
-
     }
 }

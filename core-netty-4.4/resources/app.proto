@@ -236,7 +236,7 @@ message JoinMessage {
     optional int32 from_node_id = 1;
     optional int32 to_node_id = 2;
     optional int32 from_cluster_id = 3;
-    optional int 32 to_cluster_id = 4;
+    optional int32 to_cluster_id = 4;
 }
 
 message ClientMessage{

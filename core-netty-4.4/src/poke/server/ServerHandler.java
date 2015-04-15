@@ -28,6 +28,8 @@ import poke.comm.App.Request;
 import poke.server.queue.ChannelQueue;
 import poke.server.queue.QueueFactory;
 
+import java.net.InetSocketAddress;
+
 /**
  * As implemented, this server handler does not share queues or worker threads
  * between connections. A new instance of this class is created for each socket

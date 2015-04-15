@@ -22,6 +22,7 @@ import poke.comm.App.Ping;
 import poke.comm.App.PokeStatus;
 import poke.comm.App.Request;
 import poke.server.conf.ServerConf;
+import poke.server.queue.RequestEntry;
 import poke.server.resources.Resource;
 import poke.server.resources.ResourceUtil;
 
@@ -36,8 +37,9 @@ public class PingResource implements Resource {
 	 * 
 	 * @see poke.server.resources.Resource#process(eye.Comm.Finger)
 	 */
-	public Request process(Request request) {
+	public Request process(RequestEntry entry) {
 		// TODO add code to process the message/event received
+		final Request request = entry.request();
 		logger.info("poke: " + request.getBody().getPing().getTag());
 
 		Request.Builder rb = Request.newBuilder();

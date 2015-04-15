@@ -17,6 +17,7 @@ package poke.server.resources;
 
 import poke.comm.App.Request;
 import poke.server.conf.ServerConf;
+import poke.server.queue.RequestEntry;
 
 
 /**
@@ -35,7 +36,7 @@ public interface Resource {
 	 * @param request
 	 * @return an action
 	 */
-	Request process(Request request);
+	Request process(RequestEntry request);
 
 	void setConfig(ServerConf conf);
 

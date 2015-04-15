@@ -240,12 +240,12 @@ message JoinMessage {
 }
 
 message ClientMessage{
-  optional string msgId = 1;
-  optional int32 senderUserName = 2;
-  optional int32 receiverUserName = 3;
-  optional string msgText = 4;
-  optional string msgImageName = 5;
-  optional bytes msgImageBits = 6;
+  optional string msgId = 1;//
+  optional int32 senderUserName = 2;//
+  optional int32 receiverUserName = 3;//
+  optional string msgText = 4;//
+  optional string msgImageName = 5;//
+  optional bytes msgImageBits = 6;//
   optional MessageType messageType = 7 [default = SUCCESS];
   optional bool isClient = 8 [default = false];
   optional bool broadcastInternal = 9 [default = false];

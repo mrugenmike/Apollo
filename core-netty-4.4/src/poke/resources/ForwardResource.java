@@ -25,6 +25,7 @@ import poke.comm.App.Request;
 import poke.comm.App.RoutingPath;
 import poke.server.conf.NodeDesc;
 import poke.server.conf.ServerConf;
+import poke.server.queue.RequestEntry;
 import poke.server.resources.Resource;
 import poke.server.resources.ResourceUtil;
 
@@ -57,17 +58,17 @@ public class ForwardResource implements Resource {
 	}
 
 	@Override
-	public Request process(Request request) {
-		Integer nextNode = determineForwardNode(request);
+	public Request process(RequestEntry request) {
+		Integer nextNode = determineForwardNode(request.request());
 		if (nextNode != null) {
-			Request fwd = ResourceUtil.buildForwardMessage(request, cfg);
+			Request fwd = ResourceUtil.buildForwardMessage(request.request(), cfg);
 			return fwd;
 		} else {
 			Request reply = null;
 			// cannot forward the message - no one to forward request to as
 			// the request has traveled all known/available edges of this node
 			String statusMsg = "Unable to forward message, no paths or have already traversed";
-			Request rtn = ResourceUtil.buildError(request.getHeader(), PokeStatus.NOREACHABLE, statusMsg);
+			Request rtn = ResourceUtil.buildError(request.request().getHeader(), PokeStatus.NOREACHABLE, statusMsg);
 			return rtn;
 		}
 	}

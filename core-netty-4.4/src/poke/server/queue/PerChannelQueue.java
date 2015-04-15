@@ -47,7 +47,7 @@ public class PerChannelQueue implements ChannelQueue {
 	// threads
 	//
 	// Note these are directly accessible by the workers
-	LinkedBlockingDeque<com.google.protobuf.GeneratedMessage> inbound;
+	LinkedBlockingDeque<RequestEntry> inbound;
 	LinkedBlockingDeque<com.google.protobuf.GeneratedMessage> outbound;
 	Channel channel;
 
@@ -64,7 +64,7 @@ public class PerChannelQueue implements ChannelQueue {
 	}
 
 	protected void init() {
-		inbound = new LinkedBlockingDeque<com.google.protobuf.GeneratedMessage>();
+		inbound = new LinkedBlockingDeque<RequestEntry>();
 		outbound = new LinkedBlockingDeque<com.google.protobuf.GeneratedMessage>();
 
 		iworker = new InboundAppWorker(tgroup, 1, this);
@@ -123,7 +123,7 @@ public class PerChannelQueue implements ChannelQueue {
 	@Override
 	public void enqueueRequest(Request req, Channel notused) {
 		try {
-			inbound.put(req);
+			inbound.put(new RequestEntry(req,notused));
 		} catch (InterruptedException e) {
 			logger.error("message not enqueued for processing", e);
 		}
@@ -159,7 +159,7 @@ public class PerChannelQueue implements ChannelQueue {
 		}
 	}
 
-	public LinkedBlockingDeque<com.google.protobuf.GeneratedMessage> getInbound() {
+	public LinkedBlockingDeque<RequestEntry> getInbound() {
 		return inbound;
 	}
 

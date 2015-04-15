@@ -15,65 +15,54 @@
  */
 package poke.resources;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import poke.comm.App;
 import poke.comm.App.Request;
 import poke.server.conf.ServerConf;
-import poke.server.managers.ElectionManager;
+import poke.server.managers.RaftManager;
+import poke.server.queue.RequestEntry;
 import poke.server.resources.Resource;
+import poke.server.storage.jdbc.LogStorage;
+import poke.server.storage.jdbc.LogStorageFactory;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class JobResource implements Resource {
+	public static Logger logger = LoggerFactory.getLogger(JobResource.class);
 	ServerConf cfg;
-	final String className = "com.mysql.jdbc.Driver";
-	final String jdbcUrl = "jdbc:mysql://localhost:3306/raft";
-	final String dbUserName = "root";
-	final String password = "";
+	private final LogStorage logStorage = LogStorageFactory.getInstance();
+
 	public JobResource(){
 	}
 	private Connection getConnection() {
-
-		try {
-			Class.forName(className).newInstance();
-			return DriverManager.getConnection(jdbcUrl, dbUserName, password);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		}
-		return null;
+		return logStorage.getConnection();
 	}
 	@Override
-	public Request process(Request request) {
-		final Integer leaderId = ElectionManager.getInstance().whoIsTheLeader();
+	public Request process(RequestEntry requestEntry) {
+		final Integer leaderId = RaftManager.getInstance().getLeaderId();
 		if(cfg.getNodeId()==leaderId){
 			// I am leader hence will store the log and start log replication
 			Connection connection = getConnection();
 			try {
-				final int jobActionNumber = request.getBody().getJobOp().getAction().getNumber();
-				switch(jobActionNumber){
-					case 3:{
-						final Statement statement = connection.createStatement();
-						break;
-					}
-					default:
-						System.out.println("................action not recognized.......");
+				logger.info("Received Request: \n {} ", requestEntry);
+				if(requestEntry.request().hasJoinMessage()){
+					// process join message-store the new cluster leader in DB for dynamic processing
+					logStorage.saveClusterEntry(new ClusterEntry(requestEntry));
+				} else{
+				if(requestEntry.request().hasBody()){
+						RaftManager.getInstance().processRequest(requestEntry.request());
 				}
-
-			} catch (SQLException e) {
+				}
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}else{
 			// I am a follower hence will have to redirect to the leaderNode
+			return null;
 
 		}
-		request.getBody().getJobOp().getAction().getNumber();
+		requestEntry.request().getBody().getJobOp().getAction().getNumber();
 		return null;
 	}
 

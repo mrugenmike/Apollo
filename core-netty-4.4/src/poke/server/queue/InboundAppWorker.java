@@ -26,8 +26,6 @@ import poke.server.resources.Resource;
 import poke.server.resources.ResourceFactory;
 import poke.server.resources.ResourceUtil;
 
-import com.google.protobuf.GeneratedMessage;
-
 public class InboundAppWorker extends Thread {
 	protected static Logger logger = LoggerFactory.getLogger("server");
 
@@ -58,11 +56,11 @@ public class InboundAppWorker extends Thread {
 
 			try {
 				// block until a message is enqueued
-				GeneratedMessage msg = sq.inbound.take();
+				RequestEntry msg = sq.inbound.take();
 
 				// process request and enqueue response
-				if (msg instanceof Request) {
-					Request req = ((Request) msg);
+				if (msg.request() instanceof Request) {
+					Request req = ((Request) msg.request());
 
 					// HEY! if you find yourself here and are tempted to add
 					// code to process state or requests then you are in the
@@ -75,7 +73,7 @@ public class InboundAppWorker extends Thread {
 					// creates creation burdens on the server. If
 					// we use a pool instead, we can gain some relief.
 
-					Resource rsc = ResourceFactory.getInstance().resourceInstance(req.getHeader());
+					Resource rsc = ResourceFactory.getInstance().resourceInstance(msg);
 
 					Request reply = null;
 					if (rsc == null) {
@@ -86,7 +84,7 @@ public class InboundAppWorker extends Thread {
 						// message communication can be two-way or one-way.
 						// One-way communication will not produce a response
 						// (reply).
-						reply = rsc.process(req);
+						reply = rsc.process(msg);
 					}
 
 					if (reply != null)

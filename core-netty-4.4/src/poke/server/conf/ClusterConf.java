@@ -28,6 +28,16 @@ public class ClusterConf {
 
     List<Cluster> clusters;
 
+    StorageInfo storageInfo;
+
+    public StorageInfo getStorageInfo() {
+        return storageInfo;
+    }
+
+    public void setStorageInfo(StorageInfo storageInfo) {
+        this.storageInfo = storageInfo;
+    }
+
 }
 
 
@@ -64,3 +74,4 @@ class ClusterNode{
     }
 
 }
+

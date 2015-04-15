@@ -21,9 +21,12 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.comm.App;
 import poke.comm.App.Header;
 import poke.server.conf.ServerConf;
 import poke.server.conf.ServerConf.ResourceConf;
+import poke.server.managers.RaftManager;
+import poke.server.queue.RequestEntry;
 
 /**
  * Resource factory provides how the server manages resource creation. We hide
@@ -43,7 +46,7 @@ import poke.server.conf.ServerConf.ResourceConf;
  * 
  */
 public class ResourceFactory {
-	protected static Logger logger = LoggerFactory.getLogger("server");
+	protected static Logger logger = LoggerFactory.getLogger("ResourceFactory");
 
 	private static ServerConf cfg;
 	private static AtomicReference<ResourceFactory> factory = new AtomicReference<ResourceFactory>();
@@ -70,32 +73,35 @@ public class ResourceFactory {
 
 	/**
 	 * Obtain a resource
-	 * 
+	 *
 	 * @param route
+	 * @param reqentry
 	 * @return
 	 */
-	public Resource resourceInstance(Header header) {
+	public Resource resourceInstance(RequestEntry reqentry) {
 		// is the message for this server?
-		if (header.hasToNode()) {
-			if (cfg.getNodeId() == header.getToNode())
-				; // fall through and process normally
-			else {
+		final int leaderId = RaftManager.getInstance().getLeaderId();
+			if (cfg.getNodeId() == leaderId) {
+				// fall through and process normally
+				logger.info("Received Request");
+				final App.Request request = reqentry.request();
+				ResourceConf rc = cfg.findById(((App.Request) request).getHeader().getRoutingId().getNumber());
+				if (rc == null) {
+					return null;
+				}
+				try {
+					// strategy: instance-per-request
+					Resource rsc = (Resource) Beans.instantiate(this.getClass().getClassLoader(), rc.getClazz());
+					rsc.setConfig(cfg);
+					return rsc;
+				} catch (Exception e) {
+					logger.error("unable to create resource " + rc.getClazz());
+					return null;
+				}
+			} else {
 				// forward request
+				logger.warn("I'm not a leader hence cannot process the request");
+				return null;
 			}
-		}
-
-		ResourceConf rc = cfg.findById(header.getRoutingId().getNumber());
-		if (rc == null)
-			return null;
-
-		try {
-			// strategy: instance-per-request
-			Resource rsc = (Resource) Beans.instantiate(this.getClass().getClassLoader(), rc.getClazz());
-			rsc.setConfig(cfg);
-			return rsc;
-		} catch (Exception e) {
-			logger.error("unable to create resource " + rc.getClazz());
-			return null;
-		}
 	}
 }

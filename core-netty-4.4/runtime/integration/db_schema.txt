@@ -1,0 +1,5 @@
+CREATE TABLE `raft`.`cluster_entry` (
+  `cluster_id` INT NOT NULL,
+  `node_id` INT NOT NULL,
+  `node_ip` VARCHAR(45) NOT NULL,
+  `node_port` VARCHAR(45) NOT NULL);

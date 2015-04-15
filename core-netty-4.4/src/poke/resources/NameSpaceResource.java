@@ -20,13 +20,14 @@ import org.slf4j.LoggerFactory;
 
 import poke.comm.App.Request;
 import poke.server.conf.ServerConf;
+import poke.server.queue.RequestEntry;
 import poke.server.resources.Resource;
 
 public class NameSpaceResource implements Resource {
 	protected static Logger logger = LoggerFactory.getLogger("server");
 
 	@Override
-	public Request process(Request request) {
+	public Request process(RequestEntry request) {
 		// TODO Auto-generated method stub
 		return null;
 	}

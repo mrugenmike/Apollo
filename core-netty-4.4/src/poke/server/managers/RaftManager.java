@@ -4,10 +4,13 @@ import com.google.protobuf.ByteString;
 
 import gash.leaderelection.raft.RaftMessage;
 
+import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import poke.comm.App;
+import poke.comm.App.ClientMessage;
+import poke.comm.App.ClusterMessage;
 import poke.core.Mgmt;
 import poke.server.conf.ServerConf;
 import poke.server.election.RaftStateMachine;
@@ -210,40 +213,55 @@ public class RaftManager {
     public void processRequest(App.Request request)  {
         if(request.hasBody()){
         final App.Payload payload = request.getBody();
-         if(payload.hasClusterMessage()){
-             //log replication for clusterMessage
-            
-             
-     
-           
-             // upload image to S3 on success replicate log
-             if(leaderId==conf.getNodeId()){
-            	 final App.ClusterMessage clusterMessage = payload.getClusterMessage();
-                 final App.ClientMessage clientMessage = clusterMessage.getClientMessage();
-                 final String msgId = clientMessage.getMsgId();
-                 final String imageName = clientMessage.getMsgImageName();
-                 final ByteString msgImageBits = clientMessage.getMsgImageBits();
-                 final int clusterId = clusterMessage.getClusterId();
-                 final int senderName = clientMessage.getSenderUserName();
-                 final int receiverName = clientMessage.getReceiverUserName();
+        if(leaderId==conf.getNodeId()) {
+       
+    	 
+             if(payload.hasClusterMessage()){
                 
+            	 logger.info("***** Payload has cluster message ******");
+            	 ClusterMessage clusterMessage2=payload.getClusterMessage();
+            	 ClientMessage clientMessage2=clusterMessage2.getClientMessage();
+            	 final String msgId = clientMessage2.getMsgId();
+                 final String imageName = clientMessage2.getMsgImageName();
+                 final ByteString msgImageBits = clientMessage2.getMsgImageBits();
+                 final int clusterId = clusterMessage2.getClusterId();
+                 final int senderName = clientMessage2.getSenderUserName();
+                 final int receiverName = clientMessage2.getReceiverUserName();
+                 
                String imageUrl=  UploadFile.uploadImage(msgImageBits, imageName);
                  logger.info("*****Replicating the log now on client message *******");
                  try {
-                	 
-                	
                      LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName,receiverName, imageUrl, -1, "-1"));
-                     
+                     ConnectionManager.broadcastIntraCluster(request, false);
                  } catch (SQLException e) {
                      logger.error("Failed to save logentry {}",e.getErrorCode());
                  }
-             }
-         } else{
-             if(payload.hasClientMessage()){
-           //log replication for clientMessage
+             }else{
+                 if(payload.hasClientMessage()){
 
-             }
+                	 ClientMessage clientMessage2=payload.getClientMessage();
+                	 final String msgId = clientMessage2.getMsgId();
+                     final String imageName = clientMessage2.getMsgImageName();
+                     final ByteString msgImageBits = clientMessage2.getMsgImageBits();
+                    // final int clusterId = clusterMessage2.getClusterId();
+                     final int senderName = clientMessage2.getSenderUserName();
+                     final int receiverName = clientMessage2.getReceiverUserName();
+                     String imageUrl=  UploadFile.uploadImage(msgImageBits, imageName);
 
+                     //log replication for clientMessage
+                	 try {
+                         LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, -1, senderName,receiverName, imageUrl, -1, "-1"));
+                         ConnectionManager.broadcastIntraCluster(request, true);
+                     } catch (SQLException e) {
+                         logger.error("Failed to save logentry {}",e.getErrorCode());
+                     }
+
+                       }
+         } 
+
+         }else{
+        	 
+        	 logger.info("I am a follower Node-----> Need to replicate logs ");
          }
 
         }

@@ -16,17 +16,26 @@
 package poke.server.managers;
 
 import io.netty.channel.Channel;
+
+import java.util.Date;
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import poke.comm.App;
+import poke.comm.App.ClientMessage;
+import poke.comm.App.ClusterMessage;
+import poke.comm.App.Header;
+import poke.comm.App.Payload;
+import poke.comm.App.Ping;
 import poke.comm.App.Request;
+import poke.comm.App.Request.Builder;
 import poke.core.Mgmt;
 import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.RaftMsg;
 import poke.core.Mgmt.RequestVoteMessage;
-
-import java.util.Date;
-import java.util.HashMap;
 
 /**
  * the connection map for server-to-server communication.
@@ -47,6 +56,7 @@ public class ConnectionManager {
 	/** node ID to channel */
 	private static HashMap<Integer, Channel> connections = new HashMap<Integer, Channel>();
 	private static HashMap<Integer, Channel> mgmtConnections = new HashMap<Integer, Channel>();
+	
 
 	public static void addConnection(Integer nodeId, Channel channel, boolean isMgmt) {
 		logger.info("ConnectionManager adding connection to " + nodeId);
@@ -201,5 +211,49 @@ public class ConnectionManager {
 					}
 				}
 			}).start();
+	}
+
+	public static void broadcastLogEntry() {
+		
+		
+	}
+
+	public static void broadcastIntraCluster(Request req, boolean clientMsg) {
+		ClientMessage clientMessage;
+		boolean isClient = clientMsg;
+		if (req == null)
+			return;
+		if(clientMsg){
+			clientMessage = req.getBody().getClientMessage();
+		}
+		else
+			clientMessage = req.getBody().getClusterMessage().getClientMessage();
+
+		Builder requestBuilder = App.Request.newBuilder();
+		requestBuilder.setHeader(Header.getDefaultInstance());
+		
+			// data to send
+		 Ping ping = Ping.getDefaultInstance();
+		
+			// payload containing data
+			
+			Payload.Builder payLoadBuilder = Payload.newBuilder();
+			
+			ClientMessage.Builder clientMsgBuilder = payLoadBuilder.getClientMessageBuilder();
+			clientMsgBuilder.setMsgId(clientMessage.getMsgId());
+			clientMsgBuilder.setSenderUserName(clientMessage.getSenderUserName());
+			clientMsgBuilder.setReceiverUserName(clientMessage.getReceiverUserName());
+			clientMsgBuilder.setMsgImageName(clientMessage.getMsgImageName());
+			clientMsgBuilder.setMsgImageBits(clientMessage.getMsgImageBits());
+			clientMsgBuilder.setIsClient(clientMsg);
+			clientMsgBuilder.setBroadcastInternal(true);
+			payLoadBuilder.setClientMessage(clientMsgBuilder.build());
+			
+			payLoadBuilder.setPing(ping);
+			requestBuilder.setBody(payLoadBuilder.build());
+			Request request = requestBuilder.build();
+			
+			broadcast(request);
+	
 	}
 }

@@ -56,11 +56,11 @@ public class RaftManager {
     }
 
     private void resetNode(){
-    RaftManager.stateMachine.reset();
-    this.leaderId = -1;
-    this.votedFor = -1;
-    this.voteCount.compareAndSet(-1,0);
-    this.currentTerm = -1; // should read from storage
+        RaftManager.stateMachine.reset();
+        this.leaderId = -1;
+        this.votedFor = -1;
+        this.voteCount.compareAndSet(-1,0);
+        this.currentTerm = -1; // should read from storage
     }
 
 
@@ -100,7 +100,7 @@ public class RaftManager {
 
     //Start election
     private void startElection() {
-      stateMachine.becomeCandidate();
+        stateMachine.becomeCandidate();
 
         currentTerm++;
         voteCount.incrementAndGet();
@@ -258,12 +258,10 @@ public class RaftManager {
 
                        }
          } 
-
          }else{
         	 
         	 logger.info("I am a follower Node-----> Need to replicate logs ");
          }
-
         }
 
     }

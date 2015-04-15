@@ -39,15 +39,13 @@ public class LogEntry {
     private final String imageUrl;
     private final int nodeId;
     private final String nodeIp;
-  //  private final int index;
-    
+
 
     public String getNodeIp() {
 		return nodeIp;
 	}
 
 	public LogEntry(int currentTerm, String msgId, String imageName, int clusterId, int senderName, int receiverName, String imageUrl, int nodeId, String nodeIp) {
-
         this.currentTerm = currentTerm;
         this.msgId = msgId;
         this.imageName = imageName;
@@ -57,10 +55,6 @@ public class LogEntry {
         this.imageUrl=imageUrl;
         this.nodeId=nodeId;
         this.nodeIp=nodeIp;
-       
-        
-        
-        
     }
 
 	public String getImageUrl() {

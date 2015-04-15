@@ -166,7 +166,7 @@ public class RaftManager {
             switch (electionActionVal) {
                 case Mgmt.RaftMsg.ElectionAction.REQUESTVOTE_VALUE:{
                     if(raftMessage.getTerm()>=this.currentTerm){
-                        // become follower and cancel any ongoing election and update termId and leaderId
+                   // become follower and cancel any ongoing election and update termId and leaderId
                         stateMachine.becomeFollower();
                         this.currentTerm = raftMessage.getTerm();
                         this.leaderId = mgmt.getHeader().getOriginator();

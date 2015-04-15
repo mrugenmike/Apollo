@@ -186,7 +186,7 @@ public class ConnectionManager {
 		logger.info("Node {} became candidate and sending requests!",candidateId);
 		ConnectionManager.broadCastImmediately(mgmtBuilder.build());
 	}
-
+	
 	public synchronized static void sendLeaderNotice(final int originator, final int termId){
 			new Thread(new Runnable() {
 				@Override

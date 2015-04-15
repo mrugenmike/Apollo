@@ -16,6 +16,7 @@
 package poke.client;
 
 import java.awt.image.BufferedImage;
+import java.io.UnsupportedEncodingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import com.google.protobuf.ByteString;
 import poke.client.comm.CommConnection;
 import poke.client.comm.CommListener;
 import poke.comm.App.ClientMessage;
+import poke.comm.App.ClusterMessage;
 import poke.comm.App.Header;
 import poke.comm.App.JoinMessage;
 import poke.comm.App.Payload;
@@ -151,7 +153,9 @@ public class ClientCommand {
 		}
 	}
 
-	public void payLoadCluster(String tag, int num, byte[] bytes, String imageName) {
+	public void payLoadCluster(String tag, int num, byte[] bytes, String imageName) throws UnsupportedEncodingException {
+
+		
 		// data to send
 		Ping.Builder f = Ping.newBuilder();
 		f.setTag(tag);
@@ -166,27 +170,30 @@ public class ClientCommand {
 		
 /*** PayLoad with Cluster Message***/	
 		
-		/*
+		
 		p.getClusterMessageBuilder().getClientMessage();
-		p.getClusterMessageBuilder().getClusterId();*/
-		
+		p.getClusterMessageBuilder().getClusterId();
+		ClusterMessage.Builder cmgBuilder = ClusterMessage.newBuilder();
 		p.getClusterMessageBuilder().setClusterId(300);
-		ClientMessage.Builder cmgBuilder = p.getClusterMessageBuilder().getClientMessageBuilder();
-		cmgBuilder.setMsgId("Setting");
-		cmgBuilder.setMsgImageName(imageName);
-		cmgBuilder.setMsgIdBytes(ByteString.copyFrom(bytes));
+		ClientMessage.Builder clientMsgBuilder = p.getClusterMessageBuilder().getClientMessageBuilder();
+		clientMsgBuilder.setMsgId("455");
 		
+		clientMsgBuilder.setMsgImageName(imageName);
+		clientMsgBuilder.setMsgImageBits(ByteString.copyFrom(bytes));
+		clientMsgBuilder.setMsgIdBytes(ByteString.copyFrom("hello world","UTF-8"));
+		cmgBuilder.setClientMessage(clientMsgBuilder.build());
+		p.setClusterMessage(cmgBuilder.build());
 	
 	  //p.getClusterMessageBuilder().setClientMessage("sss");
 		
-		r.setBody(p);
+		r.setBody(p.build());
 /****/
 		// header with routing info
 		Header.Builder h = Header.newBuilder();
 		h.setOriginator(1000);
 		h.setTag("test finger");
 		h.setTime(System.currentTimeMillis());
-		h.setRoutingId(Header.Routing.PING);
+		h.setRoutingId(Header.Routing.JOBS);
 		r.setHeader(h.build());
 
 		Request req = r.build();

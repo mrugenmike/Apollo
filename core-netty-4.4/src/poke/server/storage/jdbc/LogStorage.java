@@ -37,6 +37,7 @@ public class LogStorage {
             dataSource.setMaxConnectionsPerPartition(10);
             dataSource.setPartitionCount(1);
             cpool = new BoneCP(dataSource);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -120,8 +120,11 @@ public class LogStorage {
            int receiverName=logEntry.getReceiverName();
          
             
-          String saveLogEntry = String.format("insert into %s values(%d,%d,'%s','%s', %d, '%s', '%s', '%s', '%s')",LOG_ENTRY_TABLE,clusterId,nodeId,nodeIp,"-1",currentTerm,msgId,imageName,senderName,receiverName);
-            final int execute = statement.executeUpdate(saveLogEntry);
+          String saveLogEntry = String.format("insert into %s values ( %d, %d,'%s','%s', %d, '%s', '%s', '%s', '%s')",LOG_ENTRY_TABLE,clusterId,nodeId,nodeIp,"-1",currentTerm,msgId,imageName,senderName,receiverName);
+          System.out.println(saveLogEntry+"@@@@@@@@@@");
+          
+          logger.info(saveLogEntry+"@@@@@@@@@@@@@@@@@@@@@@@@");
+          final int execute = statement.executeUpdate(saveLogEntry);
 
         } catch (SQLException e) {
             e.printStackTrace();

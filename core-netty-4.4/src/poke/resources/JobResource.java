@@ -45,7 +45,7 @@ public class JobResource implements Resource {
 			// I am leader hence will store the log and start log replication
 			Connection connection = getConnection();
 			try {
-				logger.info("Received Request: \n {} ", requestEntry);
+			//	logger.info("Received Request: \n {} ", requestEntry);
 				if(requestEntry.request().hasJoinMessage()){
 					// process join message-store the new cluster leader in DB for dynamic processing
 					logStorage.saveClusterEntry(new ClusterEntry(requestEntry));

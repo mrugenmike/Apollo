@@ -234,7 +234,7 @@ public class RaftManager {
                      LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName,receiverName, imageUrl, -1, "-1"));
                      ConnectionManager.broadcastIntraCluster(request, false);
                  } catch (SQLException e) {
-                     logger.error("Failed to save logentry {}",e.getErrorCode());
+                     //logger.error("Failed to save logentry {}",e.getErrorCode());
                  }
              }else{
                  if(payload.hasClientMessage()){

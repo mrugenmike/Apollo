@@ -3,6 +3,7 @@ package poke.server.storage.jdbc;
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
 import poke.server.conf.ClusterConf;
+import poke.server.conf.ServerConf;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -12,10 +13,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LogStorageFactory {
     private static  AtomicReference<LogStorage> instance =new AtomicReference<LogStorage>();
     private static ClusterConf clusterConf;
+    private static ServerConf serverConf;
 
-    public static void  init(ClusterConf conf){
+    public static void  init(ClusterConf conf, ServerConf serverConf){
         clusterConf = conf;
-        instance.compareAndSet(null,new LogStorage(clusterConf));
+        LogStorageFactory.serverConf = serverConf;
+        instance.compareAndSet(null,new LogStorage(clusterConf,serverConf));
     }
     static public LogStorage getInstance(){
         return instance.get();

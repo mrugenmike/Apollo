@@ -323,7 +323,7 @@ public class Server {
 		Thread cthread = new Thread(comm);
 		cthread.start();
 
-		LogStorageFactory.init(ClusterConfFactory.getInstance());
+		LogStorageFactory.init(ClusterConfFactory.getInstance(),conf);
 	}
 
 	/**

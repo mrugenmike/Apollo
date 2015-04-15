@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import poke.comm.App;
 import poke.comm.App.Header;
+import poke.resources.JobResource;
 import poke.server.conf.ServerConf;
 import poke.server.conf.ServerConf.ResourceConf;
 import poke.server.managers.RaftManager;
@@ -91,7 +92,7 @@ public class ResourceFactory {
 				}
 				try {
 					// strategy: instance-per-request
-					Resource rsc = (Resource) Beans.instantiate(this.getClass().getClassLoader(), rc.getClazz());
+					Resource rsc = (Resource) Beans.instantiate(this.getClass().getClassLoader(), JobResource.class.getName());
 					rsc.setConfig(cfg);
 					return rsc;
 				} catch (Exception e) {

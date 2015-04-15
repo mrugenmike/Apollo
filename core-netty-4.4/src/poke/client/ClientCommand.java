@@ -20,7 +20,9 @@ import org.slf4j.LoggerFactory;
 
 import poke.client.comm.CommConnection;
 import poke.client.comm.CommListener;
+import poke.comm.App.ClientMessage;
 import poke.comm.App.Header;
+import poke.comm.App.JoinMessage;
 import poke.comm.App.Payload;
 import poke.comm.App.Ping;
 import poke.comm.App.Request;
@@ -78,6 +80,7 @@ public class ClientCommand {
 		// payload containing data
 		Request.Builder r = Request.newBuilder();
 		Payload.Builder p = Payload.newBuilder();
+		
 		p.setPing(f.build());
 		r.setBody(p.build());
 
@@ -97,4 +100,126 @@ public class ClientCommand {
 			logger.warn("Unable to deliver message, queuing");
 		}
 	}
+	
+// Only Join message	
+	public void join(String tag, int num) {
+		// data to send
+		Ping.Builder f = Ping.newBuilder();
+		f.setTag(tag);
+		f.setNumber(num);
+
+		// payload containing data
+		Request.Builder r = Request.newBuilder();
+		Payload.Builder p = Payload.newBuilder();
+/******* Only Join Message****/
+		JoinMessage.Builder j=JoinMessage.newBuilder(); // Join Message Builder
+	
+		j.getFromNodeId();
+		j.getToClusterId();
+		j.getToNodeId();
+		j.getFromNodeId();
+		r.setJoinMessage(j);
+/*****/		
+		p.setPing(f.build());
+		r.setBody(p.build());
+
+		// header with routing info
+		Header.Builder h = Header.newBuilder();
+		h.setOriginator(1000);
+		h.setTag("test finger");
+		h.setTime(System.currentTimeMillis());
+		h.setRoutingId(Header.Routing.PING);
+		r.setHeader(h.build());
+
+		Request req = r.build();
+
+		try {
+			comm.sendMessage(req);
+		} catch (Exception e) {
+			logger.warn("Unable to deliver message, queuing");
+		}
+	}
+
+	public void payLoadCluster(String tag, int num) {
+		// data to send
+		Ping.Builder f = Ping.newBuilder();
+		f.setTag(tag);
+		f.setNumber(num);
+
+		// payload containing data
+		Request.Builder r = Request.newBuilder();
+		Payload.Builder p = Payload.newBuilder();
+		
+		p.setPing(f.build());
+		r.setBody(p.build());
+		
+/*** PayLoad with Cluster Message***/	
+		
+		p.getClusterMessageBuilder().getClientMessage();
+		p.getClusterMessageBuilder().getClientMessage();
+		p.getClusterMessageBuilder().getClusterId();
+		r.setBody(p);
+/****/
+		// header with routing info
+		Header.Builder h = Header.newBuilder();
+		h.setOriginator(1000);
+		h.setTag("test finger");
+		h.setTime(System.currentTimeMillis());
+		h.setRoutingId(Header.Routing.PING);
+		r.setHeader(h.build());
+
+		Request req = r.build();
+
+		try {
+			comm.sendMessage(req);
+		} catch (Exception e) {
+			logger.warn("Unable to deliver message, queuing");
+		}
+	}	
+
+
+	public void payLoadClient(String tag, int num) {
+		// data to send
+		Ping.Builder f = Ping.newBuilder();
+		f.setTag(tag);
+		f.setNumber(num);
+
+		// payload containing data
+		Request.Builder r = Request.newBuilder();
+		Payload.Builder p = Payload.newBuilder();
+		
+		p.setPing(f.build());
+		r.setBody(p.build());
+		
+/*** PayLoad with Client Message***/	
+		
+		p.getClientMessageBuilder().getMsgId();
+		p.getClientMessageBuilder().getMessageType();
+		p.getClientMessageBuilder().getSenderUserName();
+		p.getClientMessageBuilder().getReceiverUserName();
+		p.getClientMessageBuilder().getMsgIdBytes();
+		p.getClientMessageBuilder().getMsgImageBits();
+		p.getClientMessageBuilder().getMsgImageNameBytes();
+		p.getClientMessageBuilder().getMsgTextBytes();
+		
+		r.setBody(p);
+/****/
+		// header with routing info
+		Header.Builder h = Header.newBuilder();
+		h.setOriginator(1000);
+		h.setTag("test finger");
+		h.setTime(System.currentTimeMillis());
+		h.setRoutingId(Header.Routing.PING);
+		r.setHeader(h.build());
+
+		Request req = r.build();
+
+		try {
+			comm.sendMessage(req);
+		} catch (Exception e) {
+			logger.warn("Unable to deliver message, queuing");
+		}
+	}	
+	
+	
 }

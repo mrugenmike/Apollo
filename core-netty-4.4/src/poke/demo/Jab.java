@@ -41,6 +41,14 @@ public class Jab {
 		for (int i = 0; i < 3; i++) {
 			count++;
 			cc.poke(tag, count);
+			
+	//		cc.join(tag,count); // Join Message
+			
+	//		cc.payLoadCluster(tag, count); // Pay Load Cluster
+			
+		//	cc.payLoadClient(tag, count); //  Pay load Client
+			
+			
 		}
 	}
 

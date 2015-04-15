@@ -30,6 +30,7 @@ import poke.server.management.ManagementInitializer;
 import poke.server.management.ManagementQueue;
 import poke.server.managers.*;
 import poke.server.resources.ResourceFactory;
+import poke.server.storage.jdbc.LogStorageFactory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -321,6 +322,8 @@ public class Server {
 
 		Thread cthread = new Thread(comm);
 		cthread.start();
+
+		LogStorageFactory.init(ClusterConfFactory.getInstance());
 	}
 
 	/**

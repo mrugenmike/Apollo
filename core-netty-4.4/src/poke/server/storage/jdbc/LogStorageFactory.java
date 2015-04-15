@@ -12,11 +12,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LogStorageFactory {
     private static  AtomicReference<LogStorage> instance =null;
     private static ClusterConf clusterConf;
+
     public static void  init(ClusterConf conf){
         clusterConf = conf;
+        instance.compareAndSet(null,new LogStorage(clusterConf));
     }
     static public LogStorage getInstance(){
-        instance.compareAndSet(null,new LogStorage(clusterConf));
         return instance.get();
     }
 }

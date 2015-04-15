@@ -68,8 +68,9 @@ public class LogStorage {
                 final int execute = statement.executeUpdate(saveClusterEntry);
             } else{
                 //update cluster entry
-                String updateClusterEntry = String.format("update %s where %s=%d %s=%d %s='%s' %s='%s'",
-                        CLUSTER_ENTRY_TABLE, clusterId,fromClusterId,node_id,fromNodeId,node_ip,host,node_port,port);
+                String updateClusterEntry = String.format("update %s SET %s=%d, %s=%d, %s='%s', %s='%s' where %s=%d ",
+                        CLUSTER_ENTRY_TABLE, clusterId,fromClusterId,node_id,fromNodeId,node_ip,host,node_port,port,clusterId,fromClusterId);
+                logger.info("Update Query {}",updateClusterEntry);
                 final int updateCount = statement.executeUpdate(updateClusterEntry);
                 if(updateCount==1){
                     logger.info("update cluster entry for Cluster Id {}",clusterId);
@@ -89,6 +90,7 @@ public class LogStorage {
             final String findClusterEntry = String.format("select * from %s where %s=%d", CLUSTER_ENTRY_TABLE, clusterId, fromClusterId);
             final ResultSet resultSet = connection.createStatement().executeQuery(findClusterEntry);
             if(!resultSet.isBeforeFirst()){
+                logger.info("No CLuster Entry found for cluster ID {}",clusterId);
                 return false;
             }else{
                 return true;

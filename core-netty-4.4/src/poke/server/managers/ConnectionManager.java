@@ -17,6 +17,7 @@ package poke.server.managers;
 
 import io.netty.channel.Channel;
 
+import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -233,8 +234,10 @@ public class ConnectionManager {
 		requestBuilder.setHeader(Header.getDefaultInstance());
 		
 			// data to send
-		 Ping ping = Ping.getDefaultInstance();
-		
+		 Ping.Builder pingBuilder = Ping.newBuilder();
+		 pingBuilder.setNumber(-1);
+		 pingBuilder.setTag("IntraCluster-Broadcast");
+
 			// payload containing data
 			
 			Payload.Builder payLoadBuilder = Payload.newBuilder();
@@ -249,11 +252,23 @@ public class ConnectionManager {
 			clientMsgBuilder.setBroadcastInternal(true);
 			payLoadBuilder.setClientMessage(clientMsgBuilder.build());
 			
-			payLoadBuilder.setPing(ping);
+			payLoadBuilder.setPing(pingBuilder.build());
 			requestBuilder.setBody(payLoadBuilder.build());
 			Request request = requestBuilder.build();
 			
-			broadcast(request);
-	
+			broadCastImmediately(request);
+	}
+
+	private static void broadCastImmediately(Request request) {
+		if (request == null)
+			return;
+
+		for (Channel ch : connections.values()){
+			String host = ((InetSocketAddress) ch.remoteAddress()).getAddress().getHostAddress();
+			int  port = ((InetSocketAddress)ch.remoteAddress()).getPort();
+			logger.info("sending request to : {} port {}",host,port);
+			ch.writeAndFlush(request);
+		}
+
 	}
 }

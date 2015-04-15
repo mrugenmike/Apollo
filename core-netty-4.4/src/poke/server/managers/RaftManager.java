@@ -214,10 +214,7 @@ public class RaftManager {
         if(request.hasBody()){
         final App.Payload payload = request.getBody();
         if(leaderId==conf.getNodeId()) {
-       
-    	 
              if(payload.hasClusterMessage()){
-                
             	 logger.info("***** Payload has cluster message ******");
             	 ClusterMessage clusterMessage2=payload.getClusterMessage();
             	 ClientMessage clientMessage2=clusterMessage2.getClientMessage();
@@ -233,12 +230,11 @@ public class RaftManager {
                  try {
                      LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName,receiverName, imageUrl, -1, "-1"));
                      ConnectionManager.broadcastIntraCluster(request, false);
-                 } catch (SQLException e) {
+                 } catch (Exception e) {
                      //logger.error("Failed to save logentry {}",e.getErrorCode());
                  }
              }else{
                  if(payload.hasClientMessage()){
-
                 	 ClientMessage clientMessage2=payload.getClientMessage();
                 	 final String msgId = clientMessage2.getMsgId();
                      final String imageName = clientMessage2.getMsgImageName();
@@ -259,7 +255,6 @@ public class RaftManager {
                        }
          } 
          }else{
-        	 
         	 logger.info("I am a follower Node-----> Need to replicate logs ");
          }
         }

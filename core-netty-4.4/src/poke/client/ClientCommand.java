@@ -15,8 +15,12 @@
  */
 package poke.client;
 
+import java.awt.image.BufferedImage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.protobuf.ByteString;
 
 import poke.client.comm.CommConnection;
 import poke.client.comm.CommListener;
@@ -114,11 +118,12 @@ public class ClientCommand {
 /******* Only Join Message****/
 		JoinMessage.Builder j=JoinMessage.newBuilder(); // Join Message Builder
 	
-		j.getFromNodeId();
-		j.getToClusterId();
-		j.getToNodeId();
-		j.getFromNodeId();
+		j.setFromNodeId(500);
+		j.setFromClusterId(300);
+		j.setToClusterId(600);
+		j.setToNodeId(400);
 		r.setJoinMessage(j);
+		
 /*****/		
 		p.setPing(f.build());
 		r.setBody(p.build());
@@ -129,7 +134,13 @@ public class ClientCommand {
 		h.setTag("test finger");
 		h.setTime(System.currentTimeMillis());
 		h.setRoutingId(Header.Routing.PING);
+		
+
+		h.setRoutingId(Header.Routing.JOBS);
+		
+		
 		r.setHeader(h.build());
+		
 
 		Request req = r.build();
 
@@ -140,7 +151,7 @@ public class ClientCommand {
 		}
 	}
 
-	public void payLoadCluster(String tag, int num) {
+	public void payLoadCluster(String tag, int num, byte[] bytes, String imageName) {
 		// data to send
 		Ping.Builder f = Ping.newBuilder();
 		f.setTag(tag);
@@ -155,9 +166,19 @@ public class ClientCommand {
 		
 /*** PayLoad with Cluster Message***/	
 		
+		/*
 		p.getClusterMessageBuilder().getClientMessage();
-		p.getClusterMessageBuilder().getClientMessage();
-		p.getClusterMessageBuilder().getClusterId();
+		p.getClusterMessageBuilder().getClusterId();*/
+		
+		p.getClusterMessageBuilder().setClusterId(300);
+		ClientMessage.Builder cmgBuilder = p.getClusterMessageBuilder().getClientMessageBuilder();
+		cmgBuilder.setMsgId("Setting");
+		cmgBuilder.setMsgImageName(imageName);
+		cmgBuilder.setMsgIdBytes(ByteString.copyFrom(bytes));
+		
+	
+	  //p.getClusterMessageBuilder().setClientMessage("sss");
+		
 		r.setBody(p);
 /****/
 		// header with routing info
@@ -178,7 +199,7 @@ public class ClientCommand {
 	}	
 
 
-	public void payLoadClient(String tag, int num) {
+	public void payLoadClient(String tag, int num, byte[] bytes, String imageName) {
 		// data to send
 		Ping.Builder f = Ping.newBuilder();
 		f.setTag(tag);
@@ -192,15 +213,27 @@ public class ClientCommand {
 		r.setBody(p.build());
 		
 /*** PayLoad with Client Message***/	
+		ClientMessage.Builder cmgBuilder = p.getClusterMessageBuilder().getClientMessageBuilder();
 		
-		p.getClientMessageBuilder().getMsgId();
+		cmgBuilder.setMsgId("Client Message");
+		cmgBuilder.setMsgImageName(imageName);
+		cmgBuilder.setMsgText("Great Image");
+		cmgBuilder.setReceiverUserName(121);
+		cmgBuilder.setSenderUserName(111);
+		cmgBuilder.setMsgIdBytes(ByteString.copyFrom(bytes));
+		
+		
+		/*p.getClientMessageBuilder().getMsgId();
 		p.getClientMessageBuilder().getMessageType();
 		p.getClientMessageBuilder().getSenderUserName();
 		p.getClientMessageBuilder().getReceiverUserName();
 		p.getClientMessageBuilder().getMsgIdBytes();
 		p.getClientMessageBuilder().getMsgImageBits();
 		p.getClientMessageBuilder().getMsgImageNameBytes();
-		p.getClientMessageBuilder().getMsgTextBytes();
+		p.getClientMessageBuilder().getMsgTextBytes();*/
+		
+		//p.getClientMessageBuilder().setMsgId(599);
+		
 		
 		r.setBody(p);
 /****/

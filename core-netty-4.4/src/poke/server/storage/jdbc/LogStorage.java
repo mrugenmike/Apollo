@@ -2,6 +2,7 @@ package poke.server.storage.jdbc;
 
 import com.jolbox.bonecp.BoneCP;
 import com.jolbox.bonecp.BoneCPConfig;
+import com.jolbox.bonecp.BoneCPDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import poke.comm.App;
@@ -11,10 +12,7 @@ import poke.server.conf.StorageInfo;
 import poke.server.managers.LogEntry;
 import poke.server.queue.RequestEntry;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 import static poke.resources.ClusterEntry.Schema.*;
 
@@ -29,16 +27,16 @@ public class LogStorage {
     public LogStorage(ClusterConf clusterConf) {
         this.clusterConf = clusterConf;
         try {
-            final StorageInfo storageInfo = clusterConf.getStorageInfo();
-            Class.forName(storageInfo.getDriver());
-            BoneCPConfig config = new BoneCPConfig();
-            config.setJdbcUrl(storageInfo.getUrl());
-            config.setUsername(storageInfo.getUser());
-            config.setPassword(storageInfo.getPassword());
-            config.setMinConnectionsPerPartition(5);
-            config.setMaxConnectionsPerPartition(10);
-            config.setPartitionCount(1);
-            cpool = new BoneCP(config);
+            final StorageInfo storageInfo = clusterConf.getStorage();
+            Class.forName("com.mysql.jdbc.Driver");
+            BoneCPDataSource dataSource = new BoneCPDataSource();
+            dataSource.setJdbcUrl(storageInfo.getUrl());
+            dataSource.setUsername(storageInfo.getUser());
+            dataSource.setPassword(storageInfo.getPassword());
+            dataSource.setMinConnectionsPerPartition(5);
+            dataSource.setMaxConnectionsPerPartition(10);
+            dataSource.setPartitionCount(1);
+            cpool = new BoneCP(dataSource);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * Created by mrugen on 4/14/15.
  */
 public class LogStorageFactory {
-    private static  AtomicReference<LogStorage> instance =null;
+    private static  AtomicReference<LogStorage> instance =new AtomicReference<LogStorage>();
     private static ClusterConf clusterConf;
 
     public static void  init(ClusterConf conf){

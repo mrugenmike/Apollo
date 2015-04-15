@@ -5,13 +5,13 @@ CREATE TABLE `raft`.`cluster_entry` (
   `node_port` VARCHAR(45) NOT NULL);
   
   CREATE TABLE `raft`.`log_entry` (
-  `cluster_id` INT NOT NULL,
-  `node_id` INT NOT NULL,
-  `node_ip` VARCHAR(45) NOT NULL,
-  `node_port` VARCHAR(45) NOT NULL,
-  'currentTerm' INT NOT NULL,
-  'msgId' VARCHAR(50) NOT NULL,
-  'imageName' VARCHAR(50) NOT NULL,
-  'senderName' VARCHAR(50) NOT NULL,
-  'receiverName' VARCHAR(50) NOT NULL
-  'index' INT NOT NULL AUTO_INCREMENT);
+    `cluster_id` INT NOT NULL,
+    `node_id` INT NOT NULL,
+    `node_ip` VARCHAR(45) NOT NULL,
+    `node_port` VARCHAR(45) NOT NULL,
+    `currentTerm` INT NOT NULL,
+    `msgId` VARCHAR(50) NOT NULL,
+    `imageName` VARCHAR(50) NOT NULL,
+    `senderName` VARCHAR(50) NOT NULL,
+    `receiverName` VARCHAR(50) NOT NULL,
+    `index` INT NOT NULL AUTO_INCREMENT PRIMARY KEY);

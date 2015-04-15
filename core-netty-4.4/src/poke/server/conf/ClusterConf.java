@@ -28,14 +28,14 @@ public class ClusterConf {
 
     List<Cluster> clusters;
 
-    StorageInfo storageInfo;
+    StorageInfo storage;
 
-    public StorageInfo getStorageInfo() {
-        return storageInfo;
+    public StorageInfo getStorage() {
+        return storage;
     }
 
-    public void setStorageInfo(StorageInfo storageInfo) {
-        this.storageInfo = storageInfo;
+    public void setStorage(StorageInfo storage) {
+        this.storage = storage;
     }
 
 }

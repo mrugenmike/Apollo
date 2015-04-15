@@ -216,6 +216,7 @@ public class RaftManager {
              final int clusterId = clusterMessage.getClusterId();
              final int senderName = clientMessage.getSenderUserName();
              final int receiverName = clientMessage.getReceiverUserName();
+            
              
              final String imageUrl="";
            
@@ -225,7 +226,7 @@ public class RaftManager {
                  try {
                 	 
                 	
-                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm,msgId,imageName,clusterId,senderName,receiverName, imageName, receiverName, imageUrl, receiverName));
+                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName,receiverName, imageUrl, -1, "-1"));
                  } catch (SQLException e) {
                      logger.error("Failed to save logentry {}",e.getErrorCode());
                  }

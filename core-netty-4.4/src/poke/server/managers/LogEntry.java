@@ -1,10 +1,7 @@
 package poke.server.managers;
 
 public class LogEntry {
-    public int getIndex() {
-		return index;
-	}
-
+   
 	public int getCurrentTerm() {
         return currentTerm;
     }
@@ -42,14 +39,14 @@ public class LogEntry {
     private final String imageUrl;
     private final int nodeId;
     private final String nodeIp;
-    private final int index;
+  //  private final int index;
     
 
     public String getNodeIp() {
 		return nodeIp;
 	}
 
-	public LogEntry(int currentTerm, String msgId, String imageName, int clusterId, int senderName, int receiverName, String imageUrl, int nodeId, String nodeIp, int index) {
+	public LogEntry(int currentTerm, String msgId, String imageName, int clusterId, int senderName, int receiverName, String imageUrl, int nodeId, String nodeIp) {
 
         this.currentTerm = currentTerm;
         this.msgId = msgId;
@@ -60,7 +57,7 @@ public class LogEntry {
         this.imageUrl=imageUrl;
         this.nodeId=nodeId;
         this.nodeIp=nodeIp;
-        this.index=index;
+       
         
         
         

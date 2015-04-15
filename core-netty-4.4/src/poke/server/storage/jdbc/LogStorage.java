@@ -109,10 +109,19 @@ public class LogStorage {
             final Statement statement = connection.createStatement();
             
           
-
+           int clusterId=logEntry.getClusterId();
+           int nodeId=logEntry.getNodeId();
+           String nodeIp=logEntry.getNodeIp();
+          
+           int currentTerm=logEntry.getCurrentTerm();
+           String msgId=logEntry.getMsgId();
+           String imageName=logEntry.getImageName();
+           int senderName=logEntry.getSenderName();
+           int receiverName=logEntry.getReceiverName();
+         
             
-          //  String saveLogEntry = String.format("insert into %s values(%d,%d,'%s','%s', %d, '%s', '%s', '%s', '%s',%d )",LOG_ENTRY_TABLE,fromClusterId,fromNodeId,host,port);
-            //final int execute = statement.executeUpdate(saveLogEntry);
+          String saveLogEntry = String.format("insert into %s values(%d,%d,'%s','%s', %d, '%s', '%s', '%s', '%s')",LOG_ENTRY_TABLE,clusterId,nodeId,nodeIp,"-1",currentTerm,msgId,imageName,senderName,receiverName);
+            final int execute = statement.executeUpdate(saveLogEntry);
 
         } catch (SQLException e) {
             e.printStackTrace();

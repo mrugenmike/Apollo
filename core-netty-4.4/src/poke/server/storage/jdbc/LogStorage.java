@@ -24,6 +24,7 @@ public class LogStorage {
     private ClusterConf clusterConf;
     BoneCP cpool = null;
     String CLUSTER_ENTRY_TABLE="cluster_entry";
+    String LOG_ENTRY_TABLE="log_entry";
 
     public LogStorage(ClusterConf clusterConf) {
         this.clusterConf = clusterConf;
@@ -106,7 +107,12 @@ public class LogStorage {
         final Connection connection = getConnection();
         try {
             final Statement statement = connection.createStatement();
+            
+          
 
+            
+          //  String saveLogEntry = String.format("insert into %s values(%d,%d,'%s','%s', %d, '%s', '%s', '%s', '%s',%d )",LOG_ENTRY_TABLE,fromClusterId,fromNodeId,host,port);
+            //final int execute = statement.executeUpdate(saveLogEntry);
 
         } catch (SQLException e) {
             e.printStackTrace();

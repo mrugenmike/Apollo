@@ -216,11 +216,16 @@ public class RaftManager {
              final int clusterId = clusterMessage.getClusterId();
              final int senderName = clientMessage.getSenderUserName();
              final int receiverName = clientMessage.getReceiverUserName();
+             
+             final String imageUrl="";
+           
              // upload image to S3 on success replicate log
              if(leaderId==conf.getNodeId()){
                  logger.info("*****Replicating the log now on client message *******");
                  try {
-                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm,msgId,imageName,clusterId,senderName,receiverName));
+                	 
+                	
+                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm,msgId,imageName,clusterId,senderName,receiverName, imageName, receiverName, imageUrl, receiverName));
                  } catch (SQLException e) {
                      logger.error("Failed to save logentry {}",e.getErrorCode());
                  }

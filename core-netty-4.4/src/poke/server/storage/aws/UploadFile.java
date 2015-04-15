@@ -20,6 +20,7 @@ public class UploadFile {
 
 	final static AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials("AKIAJQ2I4FRN4YWSXCXQ", "3UVmA3agUfdHt+zN0QP7IEKEli1KBW/uY4XDTOJy"));
 	
+
 	 public static synchronized String  uploadImage(ByteString imageBytes,String filename) {
 		Region usWest2 = Region.getRegion(Regions.US_WEST_2);
 		s3.setRegion(usWest2);
@@ -52,4 +53,7 @@ public class UploadFile {
 		}
 		 return null;
 	}
+
+
 }
+

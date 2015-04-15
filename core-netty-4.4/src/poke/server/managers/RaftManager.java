@@ -1,14 +1,18 @@
 package poke.server.managers;
 
 import com.google.protobuf.ByteString;
+
 import gash.leaderelection.raft.RaftMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import poke.comm.App;
 import poke.core.Mgmt;
 import poke.server.conf.ServerConf;
 import poke.server.election.RaftStateMachine;
 import poke.server.election.StateMachine;
+import poke.server.storage.aws.UploadFile;
 import poke.server.storage.jdbc.LogStorageFactory;
 
 import java.sql.SQLException;
@@ -208,25 +212,28 @@ public class RaftManager {
         final App.Payload payload = request.getBody();
          if(payload.hasClusterMessage()){
              //log replication for clusterMessage
-             final App.ClusterMessage clusterMessage = payload.getClusterMessage();
-             final App.ClientMessage clientMessage = clusterMessage.getClientMessage();
-             final String msgId = clientMessage.getMsgId();
-             final String imageName = clientMessage.getMsgImageName();
-             final ByteString msgImageBits = clientMessage.getMsgImageBits();
-             final int clusterId = clusterMessage.getClusterId();
-             final int senderName = clientMessage.getSenderUserName();
-             final int receiverName = clientMessage.getReceiverUserName();
             
              
-             final String imageUrl="";
+     
            
              // upload image to S3 on success replicate log
              if(leaderId==conf.getNodeId()){
+            	 final App.ClusterMessage clusterMessage = payload.getClusterMessage();
+                 final App.ClientMessage clientMessage = clusterMessage.getClientMessage();
+                 final String msgId = clientMessage.getMsgId();
+                 final String imageName = clientMessage.getMsgImageName();
+                 final ByteString msgImageBits = clientMessage.getMsgImageBits();
+                 final int clusterId = clusterMessage.getClusterId();
+                 final int senderName = clientMessage.getSenderUserName();
+                 final int receiverName = clientMessage.getReceiverUserName();
+                
+               String imageUrl=  UploadFile.uploadImage(msgImageBits, imageName);
                  logger.info("*****Replicating the log now on client message *******");
                  try {
                 	 
                 	
                      LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName,receiverName, imageUrl, -1, "-1"));
+                     
                  } catch (SQLException e) {
                      logger.error("Failed to save logentry {}",e.getErrorCode());
                  }

@@ -135,9 +135,6 @@ public class ClientCommand {
 		h.setOriginator(1000);
 		h.setTag("test finger");
 		h.setTime(System.currentTimeMillis());
-		h.setRoutingId(Header.Routing.PING);
-		
-
 		h.setRoutingId(Header.Routing.JOBS);
 		
 		
@@ -173,21 +170,18 @@ public class ClientCommand {
 		
 		p.getClusterMessageBuilder().getClientMessage();
 		p.getClusterMessageBuilder().getClusterId();
-		ClusterMessage.Builder cmgBuilder = ClusterMessage.newBuilder();
+		ClusterMessage.Builder clusterMessageBuilder = ClusterMessage.newBuilder();
 		p.getClusterMessageBuilder().setClusterId(300);
 		ClientMessage.Builder clientMsgBuilder = p.getClusterMessageBuilder().getClientMessageBuilder();
+
+		clientMsgBuilder.setBroadcastInternal(true);
 		clientMsgBuilder.setMsgId("455");
-		
 		clientMsgBuilder.setMsgImageName(imageName);
 		clientMsgBuilder.setMsgImageBits(ByteString.copyFrom(bytes));
-		clientMsgBuilder.setMsgIdBytes(ByteString.copyFrom("hello world","UTF-8"));
-		cmgBuilder.setClientMessage(clientMsgBuilder.build());
-		p.setClusterMessage(cmgBuilder.build());
-	
-	  //p.getClusterMessageBuilder().setClientMessage("sss");
-		
+		clientMsgBuilder.setMsgIdBytes(ByteString.copyFrom("hello world", "UTF-8"));
+		clusterMessageBuilder.setClientMessage(clientMsgBuilder.build());
+		p.setClusterMessage(clusterMessageBuilder.build());
 		r.setBody(p.build());
-/****/
 		// header with routing info
 		Header.Builder h = Header.newBuilder();
 		h.setOriginator(1000);
@@ -249,7 +243,7 @@ public class ClientCommand {
 		h.setOriginator(1000);
 		h.setTag("test finger");
 		h.setTime(System.currentTimeMillis());
-		h.setRoutingId(Header.Routing.PING);
+		h.setRoutingId(Header.Routing.JOBS);
 		r.setHeader(h.build());
 
 		Request req = r.build();

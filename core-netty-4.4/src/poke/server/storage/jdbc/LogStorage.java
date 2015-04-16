@@ -66,13 +66,13 @@ public class LogStorage {
                     "    `receiverName` VARCHAR(50) NOT NULL\n" +
                     "    );",LOG_ENTRY_TABLE);
             statement.execute(createLogEntryTable);
-            logger.info("Creating {} table  for node {}",LOG_ENTRY_TABLE);
+            logger.info("Creating {} table  for node {}",LOG_ENTRY_TABLE,serverConf.getNodeId());
             String createClusterEntryTable = String.format("CREATE TABLE IF NOT EXISTS `raft`.`%s` (\n" +
                     "  `cluster_id` INT NOT NULL,\n" +
                     "  `node_id` INT NOT NULL,\n" +
                     "  `node_ip` VARCHAR(45) NOT NULL,\n" +
                     "  `node_port` VARCHAR(45) NOT NULL);",CLUSTER_ENTRY_TABLE);
-            logger.info("Creating {} table  for node {}",CLUSTER_ENTRY_TABLE);
+            logger.info("Creating {} table  for node {}",CLUSTER_ENTRY_TABLE,serverConf.getNodeId());
             statement.execute(createClusterEntryTable);
         } catch (SQLException e) {
             e.printStackTrace();

@@ -15,15 +15,23 @@
  */
 package poke.server.managers;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.HashMap;
 
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.client.comm.ClientInitializer;
+import poke.client.comm.CommConnection;
+import poke.client.comm.CommHandler;
 import poke.comm.App;
 import poke.comm.App.ClientMessage;
 import poke.comm.App.ClusterMessage;
@@ -37,6 +45,9 @@ import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.RaftMsg;
 import poke.core.Mgmt.RequestVoteMessage;
+import poke.server.conf.ClusterConf;
+import poke.server.conf.NodeDesc;
+import poke.server.conf.ServerConf;
 
 /**
  * the connection map for server-to-server communication.
@@ -57,7 +68,46 @@ public class ConnectionManager {
 	/** node ID to channel */
 	private static HashMap<Integer, Channel> connections = new HashMap<Integer, Channel>();
 	private static HashMap<Integer, Channel> mgmtConnections = new HashMap<Integer, Channel>();
-	
+
+	private static ServerConf conf;
+	private static ClusterConf clusterConf;
+
+	public static void init(ServerConf conf,ClusterConf clusterConf){
+		ConnectionManager.conf = conf;
+		ConnectionManager.clusterConf = clusterConf;
+	}
+
+	public static void addDataConnection(Integer nodeId){
+		for(NodeDesc node:conf.getAdjacent().getAdjacentNodes().values()){
+			if(node.getNodeId()==nodeId){
+				connections.put(nodeId,getConnection(node));
+				break;
+			}
+		}
+	}
+
+	private static Channel getConnection(NodeDesc desc) {
+		NioEventLoopGroup group = new NioEventLoopGroup();
+		try {
+			CommHandler handler = new CommHandler();
+			final ClientInitializer initializer = new ClientInitializer(handler,false);
+			Bootstrap b = new Bootstrap();
+			b.group(group).channel(NioSocketChannel.class).handler(initializer);
+			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+			b.option(ChannelOption.TCP_NODELAY, true);
+			b.option(ChannelOption.SO_KEEPALIVE, true);
+
+			// Make the connection attempt.
+			final ChannelFuture channelFuture = b.connect(desc.getHost(), desc.getPort()).awaitUninterruptibly();
+
+			return channelFuture.channel();
+
+		} catch (Exception ex) {
+			logger.error("failed to initialize the client connection", ex);
+		}
+		return null;
+	}
+
 
 	public static void addConnection(Integer nodeId, Channel channel, boolean isMgmt) {
 		logger.info("ConnectionManager adding connection to " + nodeId);
@@ -149,7 +199,7 @@ public class ConnectionManager {
 
 	public synchronized static void sendVote(Management mgmt,int originatorId) {
 		final int destinationId = mgmt.getHeader().getOriginator();
-		logger.info("Sending Vote--> to Node {} from Node {}",originatorId,destinationId);
+		logger.info("Sending Vote--> to Node {} from Node {}", originatorId, destinationId);
 		int term = mgmt.getRaftMessage().getTerm();
 		Management.Builder mgmtBuilder = Management.newBuilder();
 		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
@@ -220,20 +270,22 @@ public class ConnectionManager {
 	}
 
 	public static void broadcastIntraCluster(Request req, boolean clientMsg) {
+		logger.info("Broadcasting the message inside the cluster now {}",connections.values().size());
 		ClientMessage clientMessage;
 		boolean isClient = clientMsg;
 		if (req == null)
 			return;
+
 		if(clientMsg){
 			clientMessage = req.getBody().getClientMessage();
 		}
-		else
+		else{
 			clientMessage = req.getBody().getClusterMessage().getClientMessage();
+		}
 
 		Builder requestBuilder = App.Request.newBuilder();
 		requestBuilder.setHeader(Header.getDefaultInstance());
-		
-			// data to send
+
 		 Ping.Builder pingBuilder = Ping.newBuilder();
 		 pingBuilder.setNumber(-1);
 		 pingBuilder.setTag("IntraCluster-Broadcast");
@@ -241,8 +293,9 @@ public class ConnectionManager {
 			// payload containing data
 			
 			Payload.Builder payLoadBuilder = Payload.newBuilder();
-			
-			ClientMessage.Builder clientMsgBuilder = payLoadBuilder.getClientMessageBuilder();
+
+			final ClusterMessage.Builder clusterMessageBuilder = payLoadBuilder.getClusterMessageBuilder();
+			ClientMessage.Builder clientMsgBuilder = clusterMessageBuilder.getClientMessageBuilder();
 			clientMsgBuilder.setMsgId(clientMessage.getMsgId());
 			clientMsgBuilder.setSenderUserName(clientMessage.getSenderUserName());
 			clientMsgBuilder.setReceiverUserName(clientMessage.getReceiverUserName());
@@ -250,11 +303,15 @@ public class ConnectionManager {
 			clientMsgBuilder.setMsgImageBits(clientMessage.getMsgImageBits());
 			clientMsgBuilder.setIsClient(clientMsg);
 			clientMsgBuilder.setBroadcastInternal(true);
-			payLoadBuilder.setClientMessage(clientMsgBuilder.build());
+
+			clusterMessageBuilder.setClientMessage(clientMsgBuilder.build());
+			final ClusterMessage clusterMessage = clusterMessageBuilder.build();
+			payLoadBuilder.setClusterMessage(clusterMessage);
 			
 			payLoadBuilder.setPing(pingBuilder.build());
 			requestBuilder.setBody(payLoadBuilder.build());
 			Request request = requestBuilder.build();
+			logger.info("Broadcasting the request intra cluster for log replication");
 			
 			broadCastImmediately(request);
 	}
@@ -263,6 +320,7 @@ public class ConnectionManager {
 		if (request == null)
 			return;
 
+		logger.info("Found {} connections for intra-cluster transfer",connections.values().size());
 		for (Channel ch : connections.values()){
 			String host = ((InetSocketAddress) ch.remoteAddress()).getAddress().getHostAddress();
 			int  port = ((InetSocketAddress)ch.remoteAddress()).getPort();

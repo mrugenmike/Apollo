@@ -115,6 +115,7 @@ public class HeartbeatData {
 	public void setConnection(Channel channel, SocketAddress sa, Integer nodeId) {
 		//System.out.println("---> setConnecton() to " + nodeId + ", i have " + this.nodeId);
 		ConnectionManager.addConnection(nodeId, channel, true);
+		ConnectionManager.addDataConnection(nodeId);
 		this.sa = sa;
 	}
 

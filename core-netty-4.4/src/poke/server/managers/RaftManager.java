@@ -255,7 +255,15 @@ public class RaftManager {
                        }
          } 
          }else{
-        	 logger.info("I am a follower Node-----> Need to replicate logs ");
+            logger.info("Hello client I'm a follower");
+            if(request.getBody().getClusterMessage().getClientMessage().getBroadcastInternal()){
+                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+            }
          }
         }
 

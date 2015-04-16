@@ -44,13 +44,12 @@ public class Jab {
 // Mrugen-10.189.172.25
 // Harshad- 10.189.79.55
 	public void run() throws IOException {
-		ClientCommand cc = new ClientCommand("10.189.172.25", 5572);
+		ClientCommand cc = new ClientCommand("169.254.54.145", 5572);
 		CommListener listener = new ClientPrintListener("jab demo");
 		cc.addListener(listener);
 	 
-	     byte[] buffer = Files.readAllBytes(Paths.get("/Users/Akki/downloads/back.jpg"));
-	     byte[] buffer2={10,2,3,5,6};
-			
+	     byte[] buffer = Files.readAllBytes(Paths.get("/Users/mrugen/Desktop/ebay.png"));
+
 	 //      cc.join(tag,count); // Join Message
 			
 			cc.payLoadCluster(tag, count, buffer, "back.jpg"); // Pay Load Cluster

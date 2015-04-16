@@ -261,7 +261,7 @@ public class Server {
 	private void startManagers() {
 		if (conf == null)
 			return;
-
+		ConnectionManager.init(conf,ClusterConfFactory.getInstance());
 		// start the inbound and outbound manager worker threads
 		ManagementQueue.startup();
 
@@ -293,6 +293,7 @@ public class Server {
 		RaftManager.initManager(conf);
 		RaftManager.getInstance().initRaft();
 
+
 		logger.info("Server " + conf.getNodeId() + ", managers initialized");
 	}
 
@@ -313,6 +314,7 @@ public class Server {
 
 		startManagers();
 
+
 		StartManagement mgt = new StartManagement(conf);
 		Thread mthread = new Thread(mgt);
 		mthread.start();
@@ -324,7 +326,7 @@ public class Server {
 		cthread.start();
 
 		LogStorageFactory.init(ClusterConfFactory.getInstance(), conf);
-		ConnectionManager.init(conf,ClusterConfFactory.getInstance());
+
 	}
 
 	/**

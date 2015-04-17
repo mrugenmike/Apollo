@@ -311,7 +311,7 @@ public class Server {
 
 		// storage initialization
 		// TODO storage setup (e.g., connection to a database)
-
+		LogStorageFactory.init(ClusterConfFactory.getInstance(), conf);
 		startManagers();
 
 
@@ -325,7 +325,7 @@ public class Server {
 		Thread cthread = new Thread(comm);
 		cthread.start();
 
-		LogStorageFactory.init(ClusterConfFactory.getInstance(), conf);
+
 
 	}
 

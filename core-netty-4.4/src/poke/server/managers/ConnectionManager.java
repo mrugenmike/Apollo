@@ -269,54 +269,49 @@ public class ConnectionManager {
 		
 	}
 
-	public static void broadcastIntraCluster(Request req, boolean clientMsg) {
-		logger.info("Broadcasting the message inside the cluster now {}",connections.values().size());
-		ClientMessage clientMessage;
+	public static synchronized void broadcastIntraCluster(final Request req, boolean clientMsg,String imageUrl) {
+		final ClientMessage clientMessage;
 		boolean isClient = clientMsg;
-		if (req == null)
+		if (req == null) {
 			return;
-
+		}
 		if(clientMsg){
 			clientMessage = req.getBody().getClientMessage();
 		}
 		else{
 			clientMessage = req.getBody().getClusterMessage().getClientMessage();
 		}
+		final Builder requestBuilder = App.Request.newBuilder();
+		final Header header = requestBuilder.getHeaderBuilder().setOriginator(-1).build();
+		requestBuilder.setHeader(header);
+		final Payload.Builder payLoadBuilder = requestBuilder.getBodyBuilder();
+		final Ping.Builder pingBuilder = payLoadBuilder.getPingBuilder();
+		pingBuilder.setNumber(-1);
+		pingBuilder.setTag("IntraCluster-Broadcast");
+		payLoadBuilder.setPing(pingBuilder.build());
 
-		Builder requestBuilder = App.Request.newBuilder();
-		requestBuilder.setHeader(Header.getDefaultInstance());
+		final ClusterMessage.Builder clusterMessageBuilder = payLoadBuilder.getClusterMessageBuilder();
+		final ClientMessage.Builder clientMsgBuilder = clusterMessageBuilder.getClientMessageBuilder();
+		clientMsgBuilder.setMsgId(clientMessage.getMsgId());
+		clientMsgBuilder.setSenderUserName(clientMessage.getSenderUserName());
+		clientMsgBuilder.setReceiverUserName(clientMessage.getReceiverUserName());
+		clientMsgBuilder.setMsgImageName(clientMessage.getMsgImageName());
+		clientMsgBuilder.setMsgImageBits(clientMessage.getMsgImageBits());
+		clientMsgBuilder.setIsClient(clientMsg);
+		clientMsgBuilder.setBroadcastInternal(true);
+		clientMsgBuilder.setImageUrl(imageUrl);
 
-		 Ping.Builder pingBuilder = Ping.newBuilder();
-		 pingBuilder.setNumber(-1);
-		 pingBuilder.setTag("IntraCluster-Broadcast");
+		clusterMessageBuilder.setClientMessage(clientMsgBuilder.build());
+		final ClusterMessage clusterMessage = clusterMessageBuilder.build();
+		payLoadBuilder.setClusterMessage(clusterMessage);
 
-			// payload containing data
-			
-			Payload.Builder payLoadBuilder = Payload.newBuilder();
-
-			final ClusterMessage.Builder clusterMessageBuilder = payLoadBuilder.getClusterMessageBuilder();
-			ClientMessage.Builder clientMsgBuilder = clusterMessageBuilder.getClientMessageBuilder();
-			clientMsgBuilder.setMsgId(clientMessage.getMsgId());
-			clientMsgBuilder.setSenderUserName(clientMessage.getSenderUserName());
-			clientMsgBuilder.setReceiverUserName(clientMessage.getReceiverUserName());
-			clientMsgBuilder.setMsgImageName(clientMessage.getMsgImageName());
-			clientMsgBuilder.setMsgImageBits(clientMessage.getMsgImageBits());
-			clientMsgBuilder.setIsClient(clientMsg);
-			clientMsgBuilder.setBroadcastInternal(true);
-
-			clusterMessageBuilder.setClientMessage(clientMsgBuilder.build());
-			final ClusterMessage clusterMessage = clusterMessageBuilder.build();
-			payLoadBuilder.setClusterMessage(clusterMessage);
-			
-			payLoadBuilder.setPing(pingBuilder.build());
-			requestBuilder.setBody(payLoadBuilder.build());
-			Request request = requestBuilder.build();
-			logger.info("Broadcasting the request intra cluster for log replication");
-			
-			broadCastImmediately(request);
+		payLoadBuilder.setPing(pingBuilder.build());
+		requestBuilder.setBody(payLoadBuilder.build());
+		final Request request = requestBuilder.build();
+		broadCastImmediatelyWithRequest(request);
 	}
 
-	private static void broadCastImmediately(Request request) {
+	private static synchronized void  broadCastImmediatelyWithRequest(final Request request) {
 		if (request == null)
 			return;
 

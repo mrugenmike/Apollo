@@ -40,10 +40,7 @@ public class JobResource implements Resource {
 	}
 	@Override
 	public Request process(RequestEntry requestEntry) {
-		final Integer leaderId = RaftManager.getInstance().getLeaderId();
-		if(cfg.getNodeId()==leaderId){
 			// I am leader hence will store the log and start log replication
-			Connection connection = getConnection();
 			try {
 			//	logger.info("Received Request: \n {} ", requestEntry);
 				if(requestEntry.request().hasJoinMessage()){
@@ -57,12 +54,6 @@ public class JobResource implements Resource {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}else{
-			// I am a follower hence will have to redirect to the leaderNode
-			return null;
-
-		}
-		requestEntry.request().getBody().getJobOp().getAction().getNumber();
 		return null;
 	}
 

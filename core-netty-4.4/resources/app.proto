@@ -249,6 +249,7 @@ message ClientMessage{
   optional MessageType messageType = 7 [default = SUCCESS];
   optional bool isClient = 8 [default = false];
   optional bool broadcastInternal = 9 [default = false];
+  optional string imageUrl = 10; //used only by the leader during log replication.
   enum MessageType
   {
     REQUEST = 0;

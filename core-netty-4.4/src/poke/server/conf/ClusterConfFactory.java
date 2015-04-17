@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class ClusterConfFactory {
 
-    private static AtomicReference<ClusterConf> instance = new AtomicReference<ClusterConf>();
+    private static final AtomicReference<ClusterConf> instance = new AtomicReference<ClusterConf>();
     public static void setInstance(ClusterConf clusterConf) {
         instance.compareAndSet(null,clusterConf);
     }

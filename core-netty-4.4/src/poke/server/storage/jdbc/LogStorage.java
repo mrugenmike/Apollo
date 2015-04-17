@@ -88,6 +88,8 @@ public class LogStorage {
         } catch (SQLException e) {
             logger.error("Failed to get connection from connection pool due to {}",e.getMessage());
             e.printStackTrace();
+        }catch (Exception e){
+            logger.error("Exception while getting connection from pool "+e.getMessage());
         }
         return null;
     }

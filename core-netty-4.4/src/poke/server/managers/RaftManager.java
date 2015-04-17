@@ -118,7 +118,6 @@ public class RaftManager {
             @Override
             public void run(){
                 while (true){
-                    System.out.println("Sending Append Notices!!");
                     ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
                     try {
                         Thread.sleep(3000);
@@ -159,8 +158,6 @@ public class RaftManager {
     public void processRequest(Mgmt.Management mgmt) {
 
         final Mgmt.RaftMsg raftMessage = mgmt.getRaftMessage();
-        logger.info("Processing request now {}", raftMessage);
-
         if(raftMessage.hasAction()){
             int electionActionVal = raftMessage.getAction().getNumber();
             switch (electionActionVal) {
@@ -226,10 +223,10 @@ public class RaftManager {
                  final int receiverName = clientMessage2.getReceiverUserName();
                  
                String imageUrl=  UploadFile.uploadImage(msgImageBits, imageName);
-                 logger.info("*****Replicating the log now on client message *******");
                  try {
-                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName,receiverName, imageUrl, -1, "-1"));
-                     ConnectionManager.broadcastIntraCluster(request, false);
+                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName, receiverName, imageUrl, -1, "-1"));
+                     logger.info("*****Replicating the log now on client message *******");
+                     ConnectionManager.broadcastIntraCluster(request, false,imageUrl);
                  } catch (Exception e) {
                      //logger.error("Failed to save logentry {}",e.getErrorCode());
                  }
@@ -247,22 +244,31 @@ public class RaftManager {
                      //log replication for clientMessage
                 	 try {
                          LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, -1, senderName,receiverName, imageUrl, -1, "-1"));
-                         ConnectionManager.broadcastIntraCluster(request, true);
+                         ConnectionManager.broadcastIntraCluster(request, true,imageUrl);
                      } catch (SQLException e) {
                          logger.error("Failed to save logentry {}",e.getErrorCode());
                      }
-
                        }
          } 
          }else{
-            logger.info("Hello client I'm a follower");
             if(request.getBody().getClusterMessage().getClientMessage().getBroadcastInternal()){
                 logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
-                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
-                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
-                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
-                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
-                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                ClusterMessage clusterMessage2=payload.getClusterMessage();
+                ClientMessage clientMessage2=clusterMessage2.getClientMessage();
+                final String msgId = clientMessage2.getMsgId();
+                final String imageName = clientMessage2.getMsgImageName();
+                final ByteString msgImageBits = clientMessage2.getMsgImageBits();
+                final int clusterId = clusterMessage2.getClusterId();
+                final int senderName = clientMessage2.getSenderUserName();
+                final int receiverName = clientMessage2.getReceiverUserName();
+                final String imageUrl = clientMessage2.getImageUrl();
+                try {
+                    LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, -1, senderName, receiverName, imageUrl, -1, "-1"));
+                } catch (SQLException e) {
+                    logger.error("Exception occured while storing logentry on node {}",conf.getNodeId());
+                    e.printStackTrace();
+                }
+
             }
          }
         }

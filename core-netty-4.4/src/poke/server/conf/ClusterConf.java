@@ -41,46 +41,7 @@ public class ClusterConf {
 }
 
 
-class Cluster {
-    public List<ClusterNode> getNodes() {
-        return nodes;
-    }
 
-    public void setNodes(List<ClusterNode> nodes) {
-        this.nodes = nodes;
-    }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    int id;
-    List<ClusterNode> nodes;
-}
-
-class ClusterNode{
-    String ip;
-    int port;
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-}
 

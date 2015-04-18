@@ -6,6 +6,11 @@ import java.net.InetSocketAddress;
 
 public class RequestEntry {
     private final App.Request req;
+
+    public Channel getChannel() {
+        return channel;
+    }
+
     private final Channel channel;
 
     public String getHost() {

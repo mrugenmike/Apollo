@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import poke.comm.App;
 import poke.comm.App.Request;
 import poke.server.conf.ServerConf;
+import poke.server.managers.ConnectionManager;
 import poke.server.managers.RaftManager;
 import poke.server.queue.RequestEntry;
 import poke.server.resources.Resource;
@@ -40,20 +41,20 @@ public class JobResource implements Resource {
 	}
 	@Override
 	public Request process(RequestEntry requestEntry) {
-			// I am leader hence will store the log and start log replication
 			try {
-			//	logger.info("Received Request: \n {} ", requestEntry);
 				if(requestEntry.request().hasJoinMessage()){
-					// process join message-store the new cluster leader in DB for dynamic processing
+					final App.JoinMessage joinMessage = requestEntry.request().getJoinMessage();
 					logStorage.saveClusterEntry(new ClusterEntry(requestEntry));
+					final int fromClusterId = joinMessage.getFromClusterId();
+					ConnectionManager.addClusterConnection(fromClusterId,requestEntry.getChannel());
 				} else{
 				if(requestEntry.request().hasBody()){
-						RaftManager.getInstance().processRequest(requestEntry.request());
+					RaftManager.getInstance().processRequest(requestEntry.request());
 				}
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
+		} catch (Exception e) {
+				e.printStackTrace();
+		}
 		return null;
 	}
 

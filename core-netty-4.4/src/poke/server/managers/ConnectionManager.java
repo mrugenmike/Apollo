@@ -21,6 +21,7 @@ import io.netty.channel.Channel;
 import java.net.InetSocketAddress;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import poke.client.comm.ClientInitializer;
 import poke.client.comm.CommConnection;
 import poke.client.comm.CommHandler;
+import poke.cluster.ClusterConnectionManager;
 import poke.comm.App;
 import poke.comm.App.ClientMessage;
 import poke.comm.App.ClusterMessage;
@@ -45,6 +47,7 @@ import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.RaftMsg;
 import poke.core.Mgmt.RequestVoteMessage;
+import poke.server.conf.Cluster;
 import poke.server.conf.ClusterConf;
 import poke.server.conf.NodeDesc;
 import poke.server.conf.ServerConf;
@@ -64,6 +67,7 @@ import poke.server.conf.ServerConf;
  */
 public class ConnectionManager {
 	protected static Logger logger = LoggerFactory.getLogger("ConnectionManager");
+	public static HashMap<Integer,Channel> clusterConnections = new HashMap<Integer, Channel>();
 
 	/** node ID to channel */
 	private static HashMap<Integer, Channel> connections = new HashMap<Integer, Channel>();
@@ -325,7 +329,52 @@ public class ConnectionManager {
 
 	}
 
-	public static void brocastInterCluster(Request req) {
+	public static void brocastInterCluster(Request req,String imageUrl,String ignoreCLusterId) {
+		final Request interClusteMessage = getInterClusteMessage(req, imageUrl,clusterConf.getClusterId());
+		final List<Cluster> clusters = clusterConf.getClusters();
+		for(Cluster cluster:clusters){
+			final int clusterId = cluster.getId();
+			if(String.valueOf(clusterId)==null || !String.valueOf(clusterId).equals(ignoreCLusterId)){
+				logger.info("forwarding request to clusterId {}",clusterId);
+				final Channel channel = clusterConnections.get(clusterId);
+				channel.writeAndFlush(interClusteMessage);
+			}
+		}
+	}
 
+	private static Request getInterClusteMessage(Request req, String imageUrl,int clusterId) {
+		final ClientMessage clientMessage = req.getBody().getClusterMessage().getClientMessage();
+		final Builder requestBuilder = Request.newBuilder();
+		final Header header = requestBuilder.getHeaderBuilder().setOriginator(clusterId).build();
+		requestBuilder.setHeader(header);
+		final Payload.Builder payLoadBuilder = requestBuilder.getBodyBuilder();
+		final Ping.Builder pingBuilder = payLoadBuilder.getPingBuilder();
+		pingBuilder.setNumber(-1);
+		pingBuilder.setTag("InterCluster-Broadcast");
+		payLoadBuilder.setPing(pingBuilder.build());
+
+		final ClusterMessage.Builder clusterMessageBuilder = payLoadBuilder.getClusterMessageBuilder();
+		final ClientMessage.Builder clientMsgBuilder = clusterMessageBuilder.getClientMessageBuilder();
+		clientMsgBuilder.setMsgId(clientMessage.getMsgId());
+		clientMsgBuilder.setSenderUserName(clientMessage.getSenderUserName());
+		clientMsgBuilder.setReceiverUserName(clientMessage.getReceiverUserName());
+		clientMsgBuilder.setMsgImageName(clientMessage.getMsgImageName());
+		clientMsgBuilder.setMsgImageBits(clientMessage.getMsgImageBits());
+		clientMsgBuilder.setIsClient(false);
+		clientMsgBuilder.setBroadcastInternal(false);
+		clientMsgBuilder.setImageUrl(imageUrl);
+
+		clusterMessageBuilder.setClientMessage(clientMsgBuilder.build());
+		final ClusterMessage clusterMessage = clusterMessageBuilder.build();
+		payLoadBuilder.setClusterMessage(clusterMessage);
+
+		payLoadBuilder.setPing(pingBuilder.build());
+		requestBuilder.setBody(payLoadBuilder.build());
+		return requestBuilder.build();
+	}
+
+	public static void addClusterConnection(int clusterId, Channel channel) {
+		logger.info("Received connection from cluster clusterId {}",clusterId);
+		clusterConnections.put(clusterId,channel);
 	}
 }

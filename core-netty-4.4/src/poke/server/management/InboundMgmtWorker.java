@@ -79,7 +79,7 @@ public class InboundMgmtWorker extends Thread {
 				else if (mgmt.hasBeat()) {
 					HeartbeatManager.getInstance().processRequest(mgmt);
 				} else if (mgmt.hasElection()) {
-					//ElectionManager.getInstance().processRequest(mgmt);
+					// do nothing
 				} else if (mgmt.hasGraph()) {
 					NetworkManager.getInstance().processRequest(mgmt, msg.channel);
 				}

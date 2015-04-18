@@ -99,8 +99,10 @@ public class Server {
 			br = new BufferedInputStream(new FileInputStream(cfg));
 			br.read(raw);
 			conf = JsonUtil.decode(new String(raw), ServerConf.class);
-			if (!verifyConf(conf))
+			if (!verifyConf(conf)) {
 				throw new RuntimeException("verification of configuration failed");
+			}
+			ServerConfFactory.setConfInstance(conf);
 			ResourceFactory.initialize(conf);
 
 			byte[] clusterContent = new byte[(int)clusterFile.length()];

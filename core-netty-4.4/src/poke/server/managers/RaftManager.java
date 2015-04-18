@@ -8,6 +8,7 @@ import org.omg.CORBA.COMM_FAILURE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.cluster.ClusterConnectionManager;
 import poke.comm.App;
 import poke.comm.App.ClientMessage;
 import poke.comm.App.ClusterMessage;
@@ -181,8 +182,9 @@ public class RaftManager {
                         stateMachine.becomeLeader();
                         this.leaderId = conf.getNodeId();
                         voteCount.set(0);
-                        ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
-                        logger.info("received reference");
+                        ConnectionManager.sendLeaderNotice(conf.getNodeId(), currentTerm);
+                        final ClusterConnectionManager clusterConnectionManager = new ClusterConnectionManager();
+                        clusterConnectionManager.run();
                         sendAppendNotice();
                     }else{
                         voteCount.incrementAndGet();
@@ -219,22 +221,24 @@ public class RaftManager {
         if(request.hasBody()){
         final App.Payload payload = request.getBody();
         if(leaderId==conf.getNodeId()) {
-             if(payload.hasClusterMessage()){
+            //Not an internal clustermessage, this has arrived from external cluster
+             if(payload.hasClusterMessage() && !request.getBody().getClusterMessage().getClientMessage().getBroadcastInternal()){
             	 logger.info("***** Payload has cluster message ******");
             	 ClusterMessage clusterMessage2=payload.getClusterMessage();
             	 ClientMessage clientMessage2=clusterMessage2.getClientMessage();
             	 final String msgId = clientMessage2.getMsgId();
                  final String imageName = clientMessage2.getMsgImageName();
                  final ByteString msgImageBits = clientMessage2.getMsgImageBits();
-                 final int clusterId = clusterMessage2.getClusterId();
+                 final int sourceClusterId = clusterMessage2.getClusterId();
                  final int senderName = clientMessage2.getSenderUserName();
                  final int receiverName = clientMessage2.getReceiverUserName();
                  
                String imageUrl=  UploadFile.uploadImage(msgImageBits, imageName);
                  try {
-                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, clusterId, senderName, receiverName, imageUrl, -1, "-1"));
+                     LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, sourceClusterId, senderName, receiverName, imageUrl, -1, "-1"));
                      logger.info("*****Replicating the log now on client message *******");
-                     ConnectionManager.broadcastIntraCluster(request, false,imageUrl);
+                     ConnectionManager.broadcastIntraCluster(request, false, imageUrl);
+                     ConnectionManager.brocastInterCluster(request,imageUrl,String.valueOf(sourceClusterId));
                  } catch (Exception e) {
                      logger.error("Failed to save logentry {}",e.getMessage());
                  }
@@ -253,31 +257,30 @@ public class RaftManager {
                 	 try {
                          LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, -1, senderName,receiverName, imageUrl, -1, "-1"));
                          ConnectionManager.broadcastIntraCluster(request, true, imageUrl);
-                         ConnectionManager.brocastInterCluster(request);
+                         ConnectionManager.brocastInterCluster(request,imageUrl,null);
                      } catch (SQLException e) {
                          logger.error("Failed to save logentry {}",e.getErrorCode());
                      }
                        }
-         } 
+            }
          }else{
-            if(request.getBody().getClusterMessage().getClientMessage().getBroadcastInternal()){
-                logger.info("***********Received a log replication request from leader node {} *********************** ",this.leaderId);
-                ClusterMessage clusterMessage2=payload.getClusterMessage();
-                ClientMessage clientMessage2=clusterMessage2.getClientMessage();
+            final ClusterMessage clusterMessage = request.getBody().getClusterMessage();
+            if(clusterMessage.getClientMessage().getBroadcastInternal()){
+                logger.info("Received a log replication request from leader node {}",this.leaderId);
+                ClientMessage clientMessage2=clusterMessage.getClientMessage();
                 final String msgId = clientMessage2.getMsgId();
                 final String imageName = clientMessage2.getMsgImageName();
                 final ByteString msgImageBits = clientMessage2.getMsgImageBits();
-                final int clusterId = clusterMessage2.getClusterId();
+                final int clusterId = clusterMessage.getClusterId();
                 final int senderName = clientMessage2.getSenderUserName();
                 final int receiverName = clientMessage2.getReceiverUserName();
                 final String imageUrl = clientMessage2.getImageUrl();
                 try {
-                    LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, -1, senderName, receiverName, imageUrl, -1, "-1"));
+                    LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName,clusterId, senderName, receiverName, imageUrl, -1, "-1"));
                 } catch (SQLException e) {
                     logger.error("Exception occured while storing logentry on node {}",conf.getNodeId());
                     e.printStackTrace();
                 }
-
             }
          }
         }

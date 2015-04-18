@@ -192,6 +192,8 @@ public class RaftManager {
                 case Mgmt.RaftMsg.ElectionAction.LEADER_VALUE:{
                     if(raftMessage.getTerm()>=currentTerm){
                         stateMachine.becomeFollower();
+                        logger.info("Node {} became leader ",mgmt.getHeader().getOriginator());
+                        this.leaderId = mgmt.getHeader().getOriginator();
                         resetElectionTimeout();
                     }
                     break;

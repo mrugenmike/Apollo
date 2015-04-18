@@ -59,7 +59,7 @@ public class RaftManager {
         RaftManager.stateMachine.reset();
         this.leaderId = -1;
         this.votedFor = -1;
-        this.voteCount.compareAndSet(-1,0);
+        this.voteCount.compareAndSet(-1, 0);
         this.currentTerm = -1; // should read from storage
     }
 
@@ -236,7 +236,7 @@ public class RaftManager {
                      logger.info("*****Replicating the log now on client message *******");
                      ConnectionManager.broadcastIntraCluster(request, false,imageUrl);
                  } catch (Exception e) {
-                     //logger.error("Failed to save logentry {}",e.getErrorCode());
+                     logger.error("Failed to save logentry {}",e.getMessage());
                  }
              }else{
                  if(payload.hasClientMessage()){
@@ -252,7 +252,8 @@ public class RaftManager {
                      //log replication for clientMessage
                 	 try {
                          LogStorageFactory.getInstance().saveLogEntry(new LogEntry(currentTerm, msgId, imageName, -1, senderName,receiverName, imageUrl, -1, "-1"));
-                         ConnectionManager.broadcastIntraCluster(request, true,imageUrl);
+                         ConnectionManager.broadcastIntraCluster(request, true, imageUrl);
+                         ConnectionManager.brocastInterCluster(request);
                      } catch (SQLException e) {
                          logger.error("Failed to save logentry {}",e.getErrorCode());
                      }

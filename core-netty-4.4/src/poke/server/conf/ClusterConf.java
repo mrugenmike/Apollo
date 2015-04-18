@@ -50,6 +50,15 @@ class Cluster {
         this.nodes = nodes;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    int id;
     List<ClusterNode> nodes;
 }
 

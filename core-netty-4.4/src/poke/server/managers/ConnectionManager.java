@@ -324,4 +324,8 @@ public class ConnectionManager {
 		}
 
 	}
+
+	public static void brocastInterCluster(Request req) {
+
+	}
 }

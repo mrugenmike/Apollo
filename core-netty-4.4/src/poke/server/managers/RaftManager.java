@@ -102,7 +102,7 @@ public class RaftManager {
     private void startElection() {
         stateMachine.becomeCandidate();
 
-        currentTerm++;
+        currentTerm+=1;
         voteCount.incrementAndGet();
         //can vote only once in a term.
         if(this.votedFor==-1){
@@ -110,6 +110,7 @@ public class RaftManager {
             //request for votes
             ConnectionManager.sendRequestVote(conf.getNodeId(),currentTerm);
         }
+        resetElectionTimeout();
     }
 
     // Time to celebrate on becoming new Leader
@@ -179,8 +180,12 @@ public class RaftManager {
                         electionTimeout.cancel();
                         stateMachine.becomeLeader();
                         this.leaderId = conf.getNodeId();
+                        voteCount.set(0);
                         ConnectionManager.sendLeaderNotice(conf.getNodeId(),currentTerm);
+                        logger.info("received reference");
                         sendAppendNotice();
+                    }else{
+                        voteCount.incrementAndGet();
                     }
                     break;
                 }

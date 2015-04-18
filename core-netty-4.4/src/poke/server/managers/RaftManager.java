@@ -204,6 +204,7 @@ public class RaftManager {
                         leaderId = mgmt.getHeader().getOriginator();
                         currentTerm = mgmt.getRaftMessage().getTerm();
                         votedFor =-1;
+                        logger.info("Received Append Notice from the leader node {}",this.leaderId);
                         resetElectionTimeout();
                     }
                     break;
@@ -259,7 +260,7 @@ public class RaftManager {
          } 
          }else{
             if(request.getBody().getClusterMessage().getClientMessage().getBroadcastInternal()){
-                logger.info("***********I am a follower Node-----> Need to replicate logs*********************** ");
+                logger.info("***********Received a log replication request from leader node {} *********************** ",this.leaderId);
                 ClusterMessage clusterMessage2=payload.getClusterMessage();
                 ClientMessage clientMessage2=clusterMessage2.getClientMessage();
                 final String msgId = clientMessage2.getMsgId();

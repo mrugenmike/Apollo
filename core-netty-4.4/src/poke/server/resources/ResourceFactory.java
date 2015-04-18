@@ -80,23 +80,14 @@ public class ResourceFactory {
 	 * @return
 	 */
 	public Resource resourceInstance(RequestEntry reqentry) {
-		// is the message for this server?
 		final int leaderId = RaftManager.getInstance().getLeaderId();
-				// fall through and process normally
 				logger.info("Received Request");
 				final App.Request request = reqentry.request();
-				//ResourceConf rc = cfg.findById(((App.Request) request).getHeader().getRoutingId().getNumber());
-				//logger.info("");
-			/*	if (rc == null) {
-					return null;
-				}*/
 				try {
-					// strategy: instance-per-request
 					Resource rsc = (Resource) Beans.instantiate(this.getClass().getClassLoader(), "poke.resources.JobResource");
 					rsc.setConfig(cfg);
 					return rsc;
 				} catch (Exception e) {
-					/*logger.error("unable to create resource " + rc.getClazz());*/
 					return null;
 				}
 	}

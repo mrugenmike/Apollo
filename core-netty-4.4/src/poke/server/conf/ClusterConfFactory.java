@@ -9,6 +9,7 @@ public class ClusterConfFactory {
 
     private static final AtomicReference<ClusterConf> instance = new AtomicReference<ClusterConf>();
     public static void setInstance(ClusterConf clusterConf) {
+        if(clusterConf!=null)
         System.out.println("ClusterConfig SET");
         instance.set(clusterConf);
     }

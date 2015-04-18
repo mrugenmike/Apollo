@@ -99,6 +99,7 @@ public class Server {
 			br = new BufferedInputStream(new FileInputStream(cfg));
 			br.read(raw);
 			conf = JsonUtil.decode(new String(raw), ServerConf.class);
+			System.out.println("conf: "+conf);
 			if (!verifyConf(conf)) {
 				throw new RuntimeException("verification of configuration failed");
 			}

@@ -74,7 +74,7 @@ public  class ClusterConnectionManager extends Thread {
 									if (future != null) {
 										future = future.channel().writeAndFlush(req);
 										if (future.channel().isWritable()) {
-											interClustersChannels.put(c.getId(),future.channel());
+											interClustersChannels.put(c.getId(), future.channel());
 											ConnectionManager.addClusterConnection(c.getId(),future.channel());
 											logger.info("Connection to cluster {} and node {}",c.getId(),node.getId());
 											break;

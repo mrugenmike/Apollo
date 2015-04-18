@@ -160,28 +160,23 @@ public class ClientCommand {
 
 		// payload containing data
 		Request.Builder r = Request.newBuilder();
-		Payload.Builder p = Payload.newBuilder();
+		Payload.Builder payloadBuilder = Payload.newBuilder();
 		
-		p.setPing(f.build());
-		r.setBody(p.build());
-		
-/*** PayLoad with Cluster Message***/	
-		
-		
-		p.getClusterMessageBuilder().getClientMessage();
-		p.getClusterMessageBuilder().getClusterId();
-		ClusterMessage.Builder clusterMessageBuilder = ClusterMessage.newBuilder();
-		p.getClusterMessageBuilder().setClusterId(300);
-		ClientMessage.Builder clientMsgBuilder = p.getClusterMessageBuilder().getClientMessageBuilder();
+		payloadBuilder.setPing(f.build());
 
+		ClusterMessage.Builder clusterMessageBuilder = payloadBuilder.getClusterMessageBuilder();
+		payloadBuilder.getClusterMessageBuilder().setClusterId(300);
+
+		ClientMessage.Builder clientMsgBuilder = clusterMessageBuilder.getClientMessageBuilder();
 		clientMsgBuilder.setBroadcastInternal(true);
 		clientMsgBuilder.setMsgId("455");
 		clientMsgBuilder.setMsgImageName(imageName);
 		clientMsgBuilder.setMsgImageBits(ByteString.copyFrom(bytes));
 		clientMsgBuilder.setMsgIdBytes(ByteString.copyFrom("hello world", "UTF-8"));
+		clientMsgBuilder.setBroadcastInternal(false);
 		clusterMessageBuilder.setClientMessage(clientMsgBuilder.build());
-		p.setClusterMessage(clusterMessageBuilder.build());
-		r.setBody(p.build());
+		payloadBuilder.setClusterMessage(clusterMessageBuilder.build());
+		r.setBody(payloadBuilder.build());
 		// header with routing info
 		Header.Builder h = Header.newBuilder();
 		h.setOriginator(1000);
@@ -189,7 +184,7 @@ public class ClientCommand {
 		h.setTime(System.currentTimeMillis());
 		h.setRoutingId(Header.Routing.JOBS);
 		r.setHeader(h.build());
-
+		r.setBody(payloadBuilder.build());
 		Request req = r.build();
 
 		try {

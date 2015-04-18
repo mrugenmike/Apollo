@@ -43,7 +43,7 @@ public class Jab {
 	}
 
 	public void run() throws IOException {
-		ClientCommand cc = new ClientCommand("10.189.77.136", 5570);
+		ClientCommand cc = new ClientCommand("10.189.175.147", 5570);
 		CommListener listener = new ClientPrintListener("jab demo");
 		cc.addListener(listener);
 	 
@@ -51,7 +51,7 @@ public class Jab {
 
 	 //      cc.join(tag,count); // Join Message
 			
-			cc.payLoadCluster(tag, count, buffer, "back.jpg"); // Pay Load Cluster
+			cc.payLoadCluster(tag, count, buffer, "ebay.png"); // Pay Load Cluster
 			
 		//	cc.payLoadClient(tag, count,bytes, "background.jpg"); //  Pay load Client
 

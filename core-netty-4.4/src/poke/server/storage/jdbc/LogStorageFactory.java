@@ -12,13 +12,13 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class LogStorageFactory {
     private static  AtomicReference<LogStorage> instance =new AtomicReference<LogStorage>();
-    private static ClusterConf clusterConf;
-    private static ServerConf serverConf;
 
     public static void  init(ClusterConf conf, ServerConf serverConf){
-        clusterConf = conf;
-        LogStorageFactory.serverConf = serverConf;
-        instance.compareAndSet(null,new LogStorage(clusterConf,serverConf));
+        if(conf==null||serverConf==null){
+            System.out.print("\n cluster or server conf is null server:"+serverConf+" \n cluster: "+conf);
+        }else{
+            instance.compareAndSet(null,new LogStorage(conf,serverConf));
+        }
     }
     static public LogStorage getInstance(){
         return instance.get();

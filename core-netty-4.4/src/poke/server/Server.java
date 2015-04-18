@@ -334,7 +334,7 @@ public class Server {
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		if (args.length != 2) {
 			System.err.println("Usage: java " + Server.class.getClass().getName() + " conf-file");
 			System.exit(1);
@@ -353,6 +353,7 @@ public class Server {
 		}
 
 		Server svr = new Server(cfg,clusterConfig);
+		Thread.sleep(1000);
 		svr.run();
 	}
 }

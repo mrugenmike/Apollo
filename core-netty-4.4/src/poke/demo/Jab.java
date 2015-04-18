@@ -43,7 +43,7 @@ public class Jab {
 	}
 
 	public void run() throws IOException {
-		ClientCommand cc = new ClientCommand("10.189.29.77", 5571);
+		ClientCommand cc = new ClientCommand("10.189.175.147", 5571);
 		CommListener listener = new ClientPrintListener("jab demo");
 		cc.addListener(listener);
 	 

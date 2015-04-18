@@ -68,16 +68,12 @@ public class InboundMgmtWorker extends Thread {
 		while (true) {
 			if (!forever && ManagementQueue.inbound.size() == 0)
 				break;
-
 			try {
 				// block until a message is enqueued
 				ManagementQueueEntry msg = ManagementQueue.inbound.take();
-
 				if (logger.isDebugEnabled())
 					logger.debug("Inbound management message received");
-
 				Management mgmt = (Management) msg.req;
-
 				if(mgmt.hasRaftMessage())
 					RaftManager.getInstance().processRequest(mgmt);
 				else if (mgmt.hasBeat()) {
@@ -87,12 +83,8 @@ public class InboundMgmtWorker extends Thread {
 				} else if (mgmt.hasGraph()) {
 					NetworkManager.getInstance().processRequest(mgmt, msg.channel);
 				}
-				/*else if (mgmt.hasRaftMessage()){
-					CompleteRaftManager.getInstance().processRequest(mgmt);
-				}*/
 				else
 					logger.error("Unknown management message");
-
 			} catch (InterruptedException ie) {
 				break;
 			} catch (Exception e) {

@@ -105,11 +105,11 @@ public class RaftManager {
         currentTerm+=1;
         voteCount.incrementAndGet();
         //can vote only once in a term.
-        if(this.votedFor==-1){
+        //if(this.votedFor==-1){
             votedFor=conf.getNodeId();
             //request for votes
             ConnectionManager.sendRequestVote(conf.getNodeId(),currentTerm);
-        }
+        //}
         resetElectionTimeout();
     }
 

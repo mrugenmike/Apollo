@@ -40,7 +40,7 @@ public class RaftManager {
 
     private int leaderId=-1;
     private int votedFor=-1;
-    private AtomicInteger voteCount = new AtomicInteger(-1);
+    private AtomicInteger voteCount = new AtomicInteger(0);
     private int candidateId;
     public Timer electionTimeout = new Timer();
     public static StateMachine stateMachine = new RaftStateMachine();

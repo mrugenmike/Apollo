@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class UploadFile {
 	private static Logger logger = LoggerFactory.getLogger(UploadFile.class);
 
-	final static AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials("AKIAJQ2I4FRN4YWSXCXQ", "3UVmA3agUfdHt+zN0QP7IEKEli1KBW/uY4XDTOJy"));
+	final static AmazonS3Client s3 = new AmazonS3Client(new BasicAWSCredentials("dummy", "dummy"));
 	
 
 	 public static synchronized String  uploadImage(ByteString imageBytes,String filename) {
